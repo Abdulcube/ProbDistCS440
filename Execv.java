@@ -4,12 +4,7 @@ public class Execv {
 	public static void main(String[] args) {
 
 
-
-		//Can be 3,6, or 9
-
-	//	DrawBoard d = new DrawBoard(b);
-	// Works!!! to an extent lol
-		System.out.print("Run regular minimax(0) or Alpha Pruning(1): ");
+		System.out.print("Run regular minimax(0), Alpha Pruning(1) or State Distribution(2): ");
 		int typer = IO.readInt();
 		System.out.println();
 		String k ="0";
@@ -17,12 +12,19 @@ public class Execv {
 		int bSize = IO.readInt();
 		BoardGenerator b = new BoardGenerator(bSize);
 		DrawBoard d = new DrawBoard(b);
+		
+		// Fog of war, assignment 3 implementation
+		if(typer == 3){
+
+		}
+
 		System.out.println();
 		System.out.print("Agent vs Agent(2) or PVA(1):");
 		int AI = IO.readInt();
 		System.out.println();
 		System.out.print("Press Enter when Player turn ends: ");
 
+		// Player vs Agent
 		while(AI==1){
 			k = IO.readString();
 			//Change the 3rd parameter to adjust depth!
@@ -35,11 +37,11 @@ public class Execv {
 			if(j.finalState.x == 0 || j.finalState.y == 0){
 				return ;
 			}
-		//.	sleep(2);
 
 			d.updateBoard();
 			System.out.print("Press Enter when Player turn ends: ");
 		}
+		// Agent vs Agent
 		int turn = 0;
 		while(AI==2){
 			k = IO.readString();
@@ -58,8 +60,6 @@ public class Execv {
 			} else {
 				turn = 0;
 			}
-		//.	sleep(2);
-
 			d.updateBoard();
 			System.out.print("Press Enter when Next Agent steps: ");
 		}
