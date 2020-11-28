@@ -1,5 +1,5 @@
 public class FOW{
-  
+
   PNode[][] distPlot;
   public FOW(PNode[][] distPlot, Node[][] grid, String[][] observations){
     this.distPlot = distPlot;
@@ -10,7 +10,7 @@ public class FOW{
     for(int i = 0; i<grid.length; i++){
       for(int k = 0; k<grid.length; k++){
         if(grid[i][k].side == 0){
-          String curr = "";
+          String curr = ""+grid[i][k].type+":";
           for(int tempx=-1; tempx<=1; tempx++){
             for(int tempy=-1; tempy<=1; tempy++){
               int x = i + tempx;
@@ -38,7 +38,7 @@ public class FOW{
 
     for(int i = 0; i<grid.length; i++){
       for(int k = 0; k<grid.length; k++){
-        System.out.print(grid[i][k]+" , ");
+        System.out.print(grid[k][i]+" , ");
       }
       System.out.println();
     }

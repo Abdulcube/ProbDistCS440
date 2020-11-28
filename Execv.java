@@ -43,7 +43,7 @@ public class Execv {
 			}
 			while(!k.equals(" ")){
 				traverse(distPlot);
-				System.out.print("Press Enter when Player turn ends: ");
+				System.out.println("Press Enter when Player turn ends: ");
 				//AI Turn table assuming switch is random
 				//obs is an array where each value of string is a type around it
 				String[][] obs = FOW.obsCheck(b.Board);
@@ -53,10 +53,10 @@ public class Execv {
 				State t = new State(b.Board);
 				b.Board = Algorithm.turns(t, 1).pop().grid;
 				d.updateBoard();
-
-				distPlot = FOW(displot, b.Board, obs).distPlot;
+				//THis is the important function!!!
+			//	distPlot = FOW(displot, b.Board, obs).distPlot;
 				System.out.print("Current board:");
-				
+
 
 			}
 			System.out.println("Ended!");
@@ -114,8 +114,8 @@ public class Execv {
 	}
 
 	public static void traverse(PNode[][] distPlot){
-		for(int i =0; i<distPlot.length; i++){
-			for(int j =0; j<distPlot.length; j++){
+		for(int j =0; j<distPlot.length; j++){
+			for(int i =0; i<distPlot.length; i++){
 				if(distPlot[i][j].isOurs == true){
 					System.out.print("Agents Piece ");
 				} else {
