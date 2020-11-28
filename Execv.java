@@ -12,10 +12,55 @@ public class Execv {
 		int bSize = IO.readInt();
 		BoardGenerator b = new BoardGenerator(bSize);
 		DrawBoard d = new DrawBoard(b);
-		
-		// Fog of war, assignment 3 implementation
-		if(typer == 3){
 
+
+		// Fog of war, assignment 3 implementation
+		if(typer == 2){
+			System.out.println("Creating Distribution Board...");
+			//Starting distribution
+			//Making a displot array that has Pnodes with the corresponding probabilities
+			PNode[][] distPlot = new PNode[bSize][bSize];
+			for(int i =0; i<distPlot.length; i++){
+				for(int j =0; j<distPlot.length; j++){
+					PNode temp = new PNode();
+					if(b.Board[i][j].type == 'h' && b.Board[i][j].side == 1){
+						temp.setter(0,1,0,0);
+						distPlot[i][j] = temp;
+					} else if(b.Board[i][j].type == 'm' && b.Board[i][j].side == 1){
+						temp.setter(1,0,0,0);
+						distPlot[i][j] = temp;
+					}  else if(b.Board[i][j].type == 'w' && b.Board[i][j].side == 1){
+						temp.setter(0,0,1,0);
+						distPlot[i][j] = temp;
+					}  else if(b.Board[i][j].side == -1){
+						double power = 1/(double)bSize;
+						temp.setter(0,0,0,round(power, 2));
+						distPlot[i][j] = temp;
+					} else {
+						distPlot[i][j] = temp;
+					}
+				}
+			}
+			while(!k.equals(" ")){
+				traverse(distPlot);
+				System.out.print("Press Enter when Player turn ends: ");
+				//AI Turn table assuming switch is random
+				//obs is an array where each value of string is a type around it
+				String[][] obs = FOW.obsCheck(b.Board);
+				FOW.obsTraverse(obs);
+				k = IO.readString();
+
+				State t = new State(b.Board);
+				b.Board = Algorithm.turns(t, 1).pop().grid;
+				d.updateBoard();
+
+				distPlot = FOW(displot, b.Board, obs).distPlot;
+				System.out.print("Current board:");
+				
+
+			}
+			System.out.println("Ended!");
+			System.exit(0);
 		}
 
 		System.out.println();
@@ -65,67 +110,28 @@ public class Execv {
 		}
 
 
-/*
-		// Works!!!
-		int k=0;
-		while(k!=1){
-			k = IO.readInt();
-			State s = new State(b.Board);
-			//b.traverse();
-			s.traverse();
-			Queue q = Algorithm.turns(s,1);
-			q.traverse();
-			s.traverse();
-			System.out.println();
-			State r = q.pop();
-			System.out.println();
-			r.traverse();
-			System.out.println("Heuristic: " + r.h);
 
-			b.Board = r.grid;
-			d.updateBoard();
-
-		}*/
-
-
-		//int turn = d.board.turn;
-
-	//	System.out.println("turn: " + 	d.board.turn);
-
-		/*
-		while(true) { //game not over
-
-
-			if(d.board.getTurn() == 0) { //users turn
-				continue;
-			}
-			if(d.board.getTurn() == 1) {
-				System.out.println(":");
-				Algorithm a = new Algorithm(b.Board);
-				b.Board = a.finalState.grid;
-
-				//System.out.println(":");
-
-				d.updateBoard();
-
-				d.board.turn = 0;
-			}
-		}
-		*/
-	/*	while(true) {
-			 Scanner scan = new Scanner(System.in);
-			 int num = scan.nextInt();
-
-			  if (num == 1) {
-					System.out.println(":");
-					Algorithm a = new Algorithm(d.board.Board); //b.Board
-					d.board.Board = a.finalState.grid;
-
-					//System.out.println(":");
-
-					d.updateBoard();
-			  }
-		}
-*/
 	}
+
+	public static void traverse(PNode[][] distPlot){
+		for(int i =0; i<distPlot.length; i++){
+			for(int j =0; j<distPlot.length; j++){
+				if(distPlot[i][j].isOurs == true){
+					System.out.print("Agents Piece ");
+				} else {
+					System.out.print(""+distPlot[i][j].M+","+distPlot[i][j].H + "," + distPlot[i][j].W+","+ distPlot[i][j].P +" " );
+				}
+			}
+			System.out.println();
+		}
+	}
+
+	public static double round(double value, int places) {
+    if (places < 0) throw new IllegalArgumentException();
+
+    long factor = (long) Math.pow(10, places);
+    value = value * factor;
+    long tmp = Math.round(value);
+    return (double) tmp / factor;
+}
 }
