@@ -2,8 +2,6 @@ import java.util.Scanner;
 
 public class Execv {
 	public static void main(String[] args) {
-
-
 		System.out.print("Run regular minimax(0), Alpha Pruning(1) or State Distribution(2): ");
 		int typer = IO.readInt();
 		System.out.println();
@@ -34,30 +32,47 @@ public class Execv {
 						distPlot[i][j] = temp;
 					}  else if(b.Board[i][j].side == -1){
 						double power = 1/(double)bSize;
-						temp.setter(0,0,0,round(power, 2));
+						temp.setter(0,0,0,power);
 						distPlot[i][j] = temp;
 					} else {
 						distPlot[i][j] = temp;
 					}
 				}
 			}
+			String[][] obs;
+			//obs is an array where each value of string is a type around it
+			//observations has the displot update
+			/*1. opponent
+			2. observations
+			3. Player(Agent)
+			4. observations*/
 			while(!k.equals(" ")){
-				traverse(distPlot);
-				System.out.println("Press Enter when Player turn ends: ");
+
 				//AI Turn table assuming switch is random
-				//obs is an array where each value of string is a type around it
-				String[][] obs = FOW.obsCheck(b.Board);
-				FOW.obsTraverse(obs);
+				//4
+				obs = FOW.obsCheck(b.Board);
+				distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
+				//FOW.obsTraverse(obs);
+				traverse(distPlot);
+				//1
+				System.out.print("Press Enter when ready for opponent Movement: ");
 				k = IO.readString();
-
-				State t = new State(b.Board);
-				b.Board = Algorithm.turns(t, 1).pop().grid;
+				/*State t = new State(b.Board); Opponent Movement
+				b.Board = Algorithm.turns(t, 1).pop().grid;*/
+				if(b.Board == null){System.exit(0);}
 				d.updateBoard();
-				//THis is the important function!!!
-			//	distPlot = FOW(displot, b.Board, obs).distPlot;
-				System.out.print("Current board:");
-
-
+				distPlot = (new FOW(distPlot, b.Board)).distPlot;
+				//2
+				obs = FOW.obsCheck(b.Board);
+				distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
+				//FOW.obsTraverse(obs);
+				traverse(distPlot);
+				//3
+				System.out.print("Press Enter when Player turn ends: ");
+				k = IO.readString();
+				//b.Board = FOW.movement(b.Board, distPlot);
+				d.updateBoard();
+				if(b.Board == null){System.exit(0);}
 			}
 			System.out.println("Ended!");
 			System.exit(0);
@@ -114,16 +129,20 @@ public class Execv {
 	}
 
 	public static void traverse(PNode[][] distPlot){
+		System.out.println("<");
 		for(int j =0; j<distPlot.length; j++){
 			for(int i =0; i<distPlot.length; i++){
+			//	System.out.println("" + i + j);
 				if(distPlot[i][j].isOurs == true){
-					System.out.print("Agents Piece ");
+					System.out.print("Age : ");
 				} else {
-					System.out.print(""+distPlot[i][j].M+","+distPlot[i][j].H + "," + distPlot[i][j].W+","+ distPlot[i][j].P +" " );
+					System.out.print(""+Execv.round(distPlot[i][j].H,4)+ " : ");
+					//System.out.print(""+distPlot[i][j].W+", "+distPlot[i][j].H + ", " + distPlot[i][j].M+", "+ distPlot[i][j].P +" :: " );
 				}
 			}
 			System.out.println();
 		}
+		System.out.println(">");
 	}
 
 	public static double round(double value, int places) {
