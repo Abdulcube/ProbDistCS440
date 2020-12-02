@@ -70,7 +70,8 @@ public class Execv {
 				//3
 				System.out.print("Press Enter when Player turn ends: ");
 				k = IO.readString();
-				//b.Board = FOW.movement(b.Board, distPlot);
+				b.Board = FOW.movement(b.Board, distPlot);
+				distPlot = FOW.PlayerMovement(b.Board, distPlot);
 				d.updateBoard();
 				if(b.Board == null){System.exit(0);}
 			}
@@ -136,7 +137,7 @@ public class Execv {
 				if(distPlot[i][j].isOurs == true){
 					System.out.print("Age : ");
 				} else {
-					System.out.print(""+Execv.round(distPlot[i][j].H,4)+ " : ");
+					System.out.print(""+Execv.round(distPlot[i][j].M,4)+ " : ");
 					//System.out.print(""+distPlot[i][j].W+", "+distPlot[i][j].H + ", " + distPlot[i][j].M+", "+ distPlot[i][j].P +" :: " );
 				}
 			}

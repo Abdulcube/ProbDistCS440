@@ -4,6 +4,7 @@ public class FOW{
   Node[][] grid;
   int home;
   int away;
+  //Updates the distPlot based on the possible movements of the opponent.
   public FOW(PNode[][] distPlot, Node[][] grid){
     this.distPlot = distPlot;
     this.grid = grid;
@@ -87,7 +88,7 @@ public class FOW{
     this.distPlot = result;
     //Execv.traverse(result);
   }
-
+//counts the number of agents pieces and opponent
   public void numCount(){
     home = 0;
     away = 0;
@@ -120,7 +121,36 @@ public class FOW{
     //System.out.println(moves);
     return moves;
   }
-
+//Updates the probability distribution based on the movement of our agent;
+  public static  PNode[][] PlayerMovement(Node[][] grid, PNode[][] distPlot){
+    for(int i = 0; i<grid.length; i++){
+      for(int k = 0; k<grid.length; k++){
+        if(!distPlot[i][k].isOurs && grid[i][k].side == 0){
+          for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid.length; y++) {
+              if(distPlot[x][y].isOurs && grid[x][y].side != 0){
+                distPlot[i][k] = distPlot[x][y];
+                distPlot[x][y] = new PNode(0,0,0,0);
+                return distPlot;
+              }
+            }
+          }
+        } else if(distPlot[i][k].isOurs && grid[i][k].side == 1){
+          for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid.length; y++) {
+              if(!distPlot[x][y].isOurs && grid[x][y].side != 0){
+                distPlot[x][y] = distPlot[i][k];
+                distPlot[i][k] = new PNode(0,0,0,0);
+                return distPlot;
+              }
+            }
+          }
+        }
+      }
+    }
+    return distPlot;
+  }
+//Updates the probability distribution based on the agents observations;
   public static PNode[][] obsUpdate(PNode[][] distPlot, Node[][] grid, String[][] observations){
     for (int x = 0; x < distPlot.length; x++) {
       for (int y = 0; y < distPlot.length; y++) {
@@ -130,6 +160,8 @@ public class FOW{
         }
         if(current.contains("S") && grid[x][y].side == 0){
           System.out.println("Stench");
+
+
         } else {
           double sum = 0;
           for (int i = -1; i <= 1 ; i++) {
@@ -152,7 +184,7 @@ public class FOW{
             for (int k = 0; k < distPlot.length ; k++) {
               //System.out.println("Sum: "+sum);
               if(distPlot[i][k].W !=0 ){
-                distPlot[i][k].W = distPlot[i][k].W / sum;
+                distPlot[i][k].W = (distPlot[i][k].W  / sum)*typeCount(grid)[1];
               }
             }
           }
@@ -161,6 +193,8 @@ public class FOW{
         }
         if(current.contains("E") && grid[x][y].side == 0){
           System.out.println("Heat");
+          
+
         } else {
           double sum = 0;
           for (int i = -1; i <= 1 ; i++) {
@@ -183,7 +217,7 @@ public class FOW{
             for (int k = 0; k < distPlot.length ; k++) {
               //System.out.println("Sum: "+sum);
               if(distPlot[i][k].M !=0 ){
-                distPlot[i][k].M = distPlot[i][k].M / sum;
+                distPlot[i][k].M = (distPlot[i][k].M  / sum)*typeCount(grid)[0];
               }
             }
           }
@@ -192,6 +226,7 @@ public class FOW{
         }
         if(current.contains("N") && grid[x][y].side == 0){
           System.out.println("Noise");
+
 
         } else {
           double sum = 0;
@@ -215,7 +250,7 @@ public class FOW{
             for (int k = 0; k < distPlot.length ; k++) {
               //System.out.println("Sum: "+sum);
               if(distPlot[i][k].H !=0 ){
-                distPlot[i][k].H = distPlot[i][k].H / sum;
+                distPlot[i][k].H = (distPlot[i][k].H  / sum)*typeCount(grid)[2];
               }
             }
           }
@@ -254,7 +289,23 @@ public class FOW{
     }
     return distPlot;
   }
-
+//Returns an array with the number of each piece;[mage,wumpus,hero]
+  public static double[] typeCount(Node[][] grid){
+    double[] result = {0,0,0};
+    for(int i = 0; i<grid.length; i++){
+      for(int k = 0; k<grid.length; k++){
+        if(grid[i][k].side!=1){continue;}
+        switch (grid[i][k].type) {
+          case('m'): result[0]++; break;
+          case('w'): result[1]++; break;
+          case('h'): result[2]++; break;
+        }
+      }
+    }
+    return result;
+  }
+//Makes our agent move
+//Problem number 4
   public static Node[][] movement(Node[][] grid, PNode[][] distPlot){
     State t = new State(grid);
     t = Algorithm.turns(t, 0).pop();
@@ -263,7 +314,7 @@ public class FOW{
     }
     return t.grid;
   }
-
+//Observation matrix is created
   public static String[][] obsCheck(Node[][] grid){
     String[][] matrix = new String[grid.length][grid.length];
     for(int i = 0; i<grid.length; i++){
@@ -301,7 +352,7 @@ public class FOW{
     }
     return matrix;
   }
-
+//Prints observation matrix
   public static void obsTraverse(String[][] grid){
 
     for(int i = 0; i<grid.length; i++){
