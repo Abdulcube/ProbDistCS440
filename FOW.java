@@ -461,6 +461,43 @@ public class FOW{
   }
   //Makes our agent move: Problem number 4
   public static Node[][] movement(Node[][] grid, PNode[][] distPlot, int turn){
+
+    if(turn == 0){
+      boolean flag = true;
+      int[] move = new int[4];
+      double max = -100;
+      for(int i = 0; i<distPlot.length; i++){
+        for(int k = 0; k<distPlot.length; k++){
+          if(distPlot[i][k].isOurs){
+            flag = false;
+            double current =0;
+            int x1, y1 = 0;
+            switch(grid[i][k].type){
+              case 'w':
+                
+                break;
+              case 'm':
+
+                break;
+              case 'h':
+
+                break;
+            }
+            if(current>max){
+              move = {i,k,x1,y1}
+              max = current;
+            }
+          }
+
+        }
+
+      }
+      if(flag){return null;}
+      Node winner = grid[move[2]][move[3]].resolve(grid[move[0]][move[1]);
+      grid[move[2]][move[3]] = new Node(winner);
+      grid[move[0]][move[1]] = new Node(move[0],move[1]);
+      return grid;
+    }
     Algorithm j = new Algorithm(grid, turn , 3, 0);
     if(j.finalState == null){
       //System.out.println("Game OVER");
