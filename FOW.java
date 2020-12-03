@@ -1,3 +1,4 @@
+import java.util.HashMap;
 public class FOW{
 
   PNode[][] distPlot;
@@ -10,6 +11,7 @@ public class FOW{
     this.grid = grid;
     PNode[][] result = new PNode[distPlot.length][distPlot.length];
     numCount();
+    System.out.println("FOW");
     //System.out.println("Home + away: " + home +", " + away);
     for (int i = 0; i < distPlot.length; i++) {
       for (int k = 0; k < distPlot.length; k++) {
@@ -76,11 +78,11 @@ public class FOW{
               continue;
             }
 
-            sum += (double)distPlot[x1][y1].M * (double)((double)1/((double)away*totalMoves(x1,y1)));
+            sum += (double)distPlot[x1][y1].M * (double)((double)1/((double)away*(double)totalMoves(x1,y1)));
           }
         }
-        result[i][k].M = Execv.round((paran*distPlot[i][k].M) + sum, 4);
-        //pit
+        //System.out.println("Sums:"+  sum);
+        result[i][k].M = ((double)paran*distPlot[i][k].M) + (double)sum;
 
         // Next steps
       }
@@ -88,7 +90,7 @@ public class FOW{
     this.distPlot = result;
     //Execv.traverse(result);
   }
-//counts the number of agents pieces and opponent
+  //counts the number of agents pieces and opponent
   public void numCount(){
     home = 0;
     away = 0;
@@ -103,7 +105,7 @@ public class FOW{
     }
 
   }
-//computes the total number of moves a piece can make
+  //computes the total number of moves a piece can make
   public int totalMoves(int x, int y){
     int moves = 0;
 
@@ -121,8 +123,9 @@ public class FOW{
     //System.out.println(moves);
     return moves;
   }
-//Updates the probability distribution based on the movement of our agent;
+  //Updates the probability distribution based on the movement of our agent;
   public static  PNode[][] PlayerMovement(Node[][] grid, PNode[][] distPlot){
+    //System.out.println("PlayerMovement");
     for(int i = 0; i<grid.length; i++){
       for(int k = 0; k<grid.length; k++){
         if(!distPlot[i][k].isOurs && grid[i][k].side == 0){
@@ -135,22 +138,29 @@ public class FOW{
               }
             }
           }
-        } else if(distPlot[i][k].isOurs && grid[i][k].side == 1){
+
+
+        } else if(distPlot[i][k].isOurs && grid[i][k].side != 0){
           for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid.length; y++) {
-              if(!distPlot[x][y].isOurs && grid[x][y].side != 0){
+              if(!distPlot[x][y].isOurs && grid[x][y].side == 0){
                 distPlot[x][y] = distPlot[i][k];
+                //System.out.println("Inner");
                 distPlot[i][k] = new PNode(0,0,0,0);
                 return distPlot;
               }
             }
           }
+          //System.out.println("Liner");
+          distPlot[i][k] = new PNode(0,0,0,0);
+
         }
+        //
       }
     }
     return distPlot;
   }
-//Updates the probability distribution based on the agents observations;
+  //Updates the probability distribution based on the agents observations;
   public static PNode[][] obsUpdate(PNode[][] distPlot, Node[][] grid, String[][] observations){
     for (int x = 0; x < distPlot.length; x++) {
       for (int y = 0; y < distPlot.length; y++) {
@@ -159,7 +169,55 @@ public class FOW{
           continue;
         }
         if(current.contains("S") && grid[x][y].side == 0){
-          System.out.println("Stench");
+          //  System.out.println("Stench");
+          double sum =0;
+          for (int i = -1; i <= 1 ; i++) {
+            for (int k = -1; k <= 1 ; k++) {
+              int x1 = i +x;
+              int y1 = k +y;
+              if((i == 0 && k == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                continue;
+              }
+              //  System.out.println("distPlot.W: "+distPlot[x1][y1].W);
+              sum+= distPlot[x1][y1].W;
+            }
+          }
+          //  System.out.println("Sum: "+sum);
+          if(sum == 0){
+            System.out.println("ERROR: Opponent's Wumpus if off the grid.");
+            return distPlot;
+          }
+          HashMap<Integer, Integer> proximity = new HashMap<Integer, Integer>();
+          for (int i = -1; i <= 1; i++) {
+            for (int k = -1; k <= 1; k++) {
+              int x1 = i +x;
+              int y1 = k +y;
+              if((i == 0 && k == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                continue;
+              }
+              //System.out.println("X and y: " + x1+", "+y1+ " New Value: "+ distPlot[x1][y1].W);
+              distPlot[x1][y1].W = (double)distPlot[x1][y1].W* (double)((double)1/(double)sum);
+              //System.out.println("New Value: "+ distPlot[x1][y1].W);
+              proximity.put(x1,y1);
+
+            }
+          }
+
+          double[] count = typeCount(grid);
+          for (int i = 0; i < distPlot.length; i++) {
+            for (int k = 0; k < distPlot.length; k++) {
+              boolean test = false;
+              for (int x1 = -1; x1 <= 1; x1++) {
+                for (int y1 = -1; y1 <= 1; y1++) {
+                  if(x+x1 == i && y + y1 == k){
+                    test = true;
+                  }
+                }
+              }
+              if(test){continue;}
+              distPlot[i][k].W = distPlot[i][k].W * ((count[0]-1)/count[0]);
+            }
+          }
 
 
         } else {
@@ -192,8 +250,56 @@ public class FOW{
 
         }
         if(current.contains("E") && grid[x][y].side == 0){
-          System.out.println("Heat");
-          
+          //System.out.println("Heat");
+          double sum =0;
+          for (int i = -1; i <= 1 ; i++) {
+            for (int k = -1; k <= 1 ; k++) {
+              int x1 = i +x;
+              int y1 = k +y;
+              if((i == 0 && k == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                continue;
+              }
+              //  System.out.println("distPlot.M: "+distPlot[x1][y1].M);
+              sum+= distPlot[x1][y1].M;
+            }
+          }
+          //  System.out.println("Sum: "+sum);
+          if(sum == 0){
+            System.out.println("ERROR: Opponent's Mage if off the grid.");
+            return distPlot;
+          }
+          HashMap<Integer, Integer> proximity = new HashMap<Integer, Integer>();
+          for (int i = -1; i <= 1; i++) {
+            for (int k = -1; k <= 1; k++) {
+              int x1 = i +x;
+              int y1 = k +y;
+              if((i == 0 && k == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                continue;
+              }
+              //System.out.println("X and y: " + x1+", "+y1+ " New Value: "+ distPlot[x1][y1].M);
+              distPlot[x1][y1].M = (double)distPlot[x1][y1].M* (double)((double)1/(double)sum);
+              //System.out.println("New Value: "+ distPlot[x1][y1].M);
+              proximity.put(x1,y1);
+
+            }
+          }
+
+          double[] count = typeCount(grid);
+          for (int i = 0; i < distPlot.length; i++) {
+            for (int k = 0; k < distPlot.length; k++) {
+              boolean test = false;
+              for (int x1 = -1; x1 <= 1; x1++) {
+                for (int y1 = -1; y1 <= 1; y1++) {
+                  if(x+x1 == i && y + y1 == k){
+                    test = true;
+                  }
+                }
+              }
+              if(test){continue;}
+              distPlot[i][k].M = distPlot[i][k].M * ((count[0]-1)/count[0]);
+            }
+          }
+
 
         } else {
           double sum = 0;
@@ -225,7 +331,55 @@ public class FOW{
 
         }
         if(current.contains("N") && grid[x][y].side == 0){
-          System.out.println("Noise");
+          //System.out.println("Noise");
+          double sum =0;
+          for (int i = -1; i <= 1 ; i++) {
+            for (int k = -1; k <= 1 ; k++) {
+              int x1 = i +x;
+              int y1 = k +y;
+              if((i == 0 && k == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                continue;
+              }
+              //  System.out.println("distPlot.H: "+distPlot[x1][y1].H);
+              sum+= distPlot[x1][y1].H;
+            }
+          }
+          //  System.out.println("Sum: "+sum);
+          if(sum == 0){
+            System.out.println("ERROR: Opponent's Hero if off the grid.");
+            return distPlot;
+          }
+          HashMap<Integer, Integer> proximity = new HashMap<Integer, Integer>();
+          for (int i = -1; i <= 1; i++) {
+            for (int k = -1; k <= 1; k++) {
+              int x1 = i +x;
+              int y1 = k +y;
+              if((i == 0 && k == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                continue;
+              }
+              //System.out.println("X and y: " + x1+", "+y1+ " New Value: "+ distPlot[x1][y1].H);
+              distPlot[x1][y1].H = (double)distPlot[x1][y1].H* (double)((double)1/(double)sum);
+              //System.out.println("New Value: "+ distPlot[x1][y1].H);
+              proximity.put(x1,y1);
+
+            }
+          }
+
+          double[] count = typeCount(grid);
+          for (int i = 0; i < distPlot.length; i++) {
+            for (int k = 0; k < distPlot.length; k++) {
+              boolean test = false;
+              for (int x1 = -1; x1 <= 1; x1++) {
+                for (int y1 = -1; y1 <= 1; y1++) {
+                  if(x+x1 == i && y + y1 == k){
+                    test = true;
+                  }
+                }
+              }
+              if(test){continue;}
+              distPlot[i][k].H = distPlot[i][k].H * ((count[0]-1)/count[0]);
+            }
+          }
 
 
         } else {
@@ -257,6 +411,7 @@ public class FOW{
 
 
         }
+        //Needs to narrow down the pit location
         if(!current.contains("P") && grid[x][y].side == 0){
           for (int i = -1; i <= 1 ; i++) {
             for (int k = -1; k <= 1 ; k++) {
@@ -289,7 +444,7 @@ public class FOW{
     }
     return distPlot;
   }
-//Returns an array with the number of each piece;[mage,wumpus,hero]
+  //Returns an array with the number of each piece;[mage,wumpus,hero]
   public static double[] typeCount(Node[][] grid){
     double[] result = {0,0,0};
     for(int i = 0; i<grid.length; i++){
@@ -304,17 +459,20 @@ public class FOW{
     }
     return result;
   }
-//Makes our agent move
-//Problem number 4
-  public static Node[][] movement(Node[][] grid, PNode[][] distPlot){
-    State t = new State(grid);
-    t = Algorithm.turns(t, 0).pop();
-    if(t == null){
-      return null;
+  //Makes our agent move: Problem number 4
+  public static Node[][] movement(Node[][] grid, PNode[][] distPlot, int turn){
+    Algorithm j = new Algorithm(grid, turn , 3, 0);
+    if(j.finalState == null){
+      //System.out.println("Game OVER");
+      System.exit(0);
     }
-    return t.grid;
+
+    if(j.finalState.x == 0 || j.finalState.y == 0){
+      return grid;
+    }
+    return j.finalState.grid;
   }
-//Observation matrix is created
+  //Observation matrix is created
   public static String[][] obsCheck(Node[][] grid){
     String[][] matrix = new String[grid.length][grid.length];
     for(int i = 0; i<grid.length; i++){
@@ -337,7 +495,7 @@ public class FOW{
                   case 'm': result ="E"; break;
                   case 'h': result ="N"; break;
                 }
-              //  System.out.println(result);
+                //  System.out.println(result);
                 curr = curr.concat(result);
               } else if(grid[x][y].isPit){
                 curr = curr.concat("P");
@@ -352,7 +510,7 @@ public class FOW{
     }
     return matrix;
   }
-//Prints observation matrix
+  //Prints observation matrix
   public static void obsTraverse(String[][] grid){
 
     for(int i = 0; i<grid.length; i++){

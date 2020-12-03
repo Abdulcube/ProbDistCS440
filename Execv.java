@@ -52,25 +52,23 @@ public class Execv {
 				//4
 				obs = FOW.obsCheck(b.Board);
 				distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
-				//FOW.obsTraverse(obs);
 				traverse(distPlot);
 				//1
 				System.out.print("Press Enter when ready for opponent Movement: ");
 				k = IO.readString();
-				/*State t = new State(b.Board); Opponent Movement
-				b.Board = Algorithm.turns(t, 1).pop().grid;*/
+				b.Board = FOW.movement(b.Board, distPlot,1);
 				if(b.Board == null){System.exit(0);}
 				d.updateBoard();
 				distPlot = (new FOW(distPlot, b.Board)).distPlot;
 				//2
+				distPlot = FOW.PlayerMovement(b.Board, distPlot);
 				obs = FOW.obsCheck(b.Board);
 				distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
-				//FOW.obsTraverse(obs);
 				traverse(distPlot);
 				//3
 				System.out.print("Press Enter when Player turn ends: ");
 				k = IO.readString();
-				b.Board = FOW.movement(b.Board, distPlot);
+				b.Board = FOW.movement(b.Board, distPlot,0);
 				distPlot = FOW.PlayerMovement(b.Board, distPlot);
 				d.updateBoard();
 				if(b.Board == null){System.exit(0);}
