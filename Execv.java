@@ -57,12 +57,16 @@ public class Execv {
 				System.out.print("Press Enter when ready for opponent Movement: ");
 				k = IO.readString();
 				b.Board = FOW.movement(b.Board, distPlot,1);
+				distPlot = FOW.PlayerMovement(b.Board, distPlot);
 				if(b.Board == null){System.exit(0);}
 				d.updateBoard();
 				distPlot = (new FOW(distPlot, b.Board)).distPlot;
+				traverse(distPlot);
 				//2
 				distPlot = FOW.PlayerMovement(b.Board, distPlot);
+				traverse(distPlot);
 				obs = FOW.obsCheck(b.Board);
+				traverse(distPlot);
 				distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
 				traverse(distPlot);
 				//3
@@ -70,8 +74,9 @@ public class Execv {
 				k = IO.readString();
 				b.Board = FOW.movement(b.Board, distPlot,0);
 				distPlot = FOW.PlayerMovement(b.Board, distPlot);
-				d.updateBoard();
 				if(b.Board == null){System.exit(0);}
+				d.updateBoard();
+
 			}
 			System.out.println("Ended!");
 			System.exit(0);
@@ -122,9 +127,6 @@ public class Execv {
 			d.updateBoard();
 			System.out.print("Press Enter when Next Agent steps: ");
 		}
-
-
-
 	}
 
 	public static void traverse(PNode[][] distPlot){
@@ -135,7 +137,7 @@ public class Execv {
 				if(distPlot[i][j].isOurs == true){
 					System.out.print("Age : ");
 				} else {
-					System.out.print(""+Execv.round(distPlot[i][j].M,4)+ " : ");
+					System.out.print(""+Execv.round(distPlot[i][j].W,3)+ " : ");
 					//System.out.print(""+distPlot[i][j].W+", "+distPlot[i][j].H + ", " + distPlot[i][j].M+", "+ distPlot[i][j].P +" :: " );
 				}
 			}
@@ -151,5 +153,5 @@ public class Execv {
     value = value * factor;
     long tmp = Math.round(value);
     return (double) tmp / factor;
-}
+	}
 }

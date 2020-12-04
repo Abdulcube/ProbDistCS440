@@ -15,10 +15,13 @@ public class FOW{
     //System.out.println("Home + away: " + home +", " + away);
     for (int i = 0; i < distPlot.length; i++) {
       for (int k = 0; k < distPlot.length; k++) {
-        if(distPlot[i][k].isOurs){
+        if(distPlot[i][k].isOurs || distPlot[i][k].P == 1.0){
           result[i][k] = new PNode(distPlot[i][k]);
           continue;
-        }
+        } /*else if(distPlot[i][k].M == 1.0 || distPlot[i][k].W == 1.0 || distPlot[i][k].H == 1.0){
+          result[i][k] = new PNode(distPlot[i][k]);
+          continue;
+        }*/
         result[i][k] = new PNode(distPlot[i][k]);
         double paran = 1-((double)1/(double)away);
         double sum = 0;
@@ -123,9 +126,28 @@ public class FOW{
     //System.out.println(moves);
     return moves;
   }
+
+  public static PNode[][] balance(PNode[][] distPlot){
+    double sum =0;
+    for(int i = 0; i<distPlot.length; i++){
+      sum =0;
+      for(int k = 0; k<distPlot.length; k++){
+        sum+= distPlot[k][i].P;
+      }
+      //System.out.println(sum);
+      if(sum!=0){
+        for(int k = 0; k<distPlot.length; k++){
+          distPlot[k][i].P = distPlot[k][i].P/sum;
+        }
+      }
+    }
+    return distPlot;
+  }
   //Updates the probability distribution based on the movement of our agent;
   public static  PNode[][] PlayerMovement(Node[][] grid, PNode[][] distPlot){
     //System.out.println("PlayerMovement");
+
+    if(grid == null){return null;}
     for(int i = 0; i<grid.length; i++){
       for(int k = 0; k<grid.length; k++){
         if(!distPlot[i][k].isOurs && grid[i][k].side == 0){
@@ -134,7 +156,7 @@ public class FOW{
               if(distPlot[x][y].isOurs && grid[x][y].side != 0){
                 distPlot[i][k] = distPlot[x][y];
                 distPlot[x][y] = new PNode(0,0,0,0);
-                return distPlot;
+                return balance(distPlot);
               }
             }
           }
@@ -147,7 +169,7 @@ public class FOW{
                 distPlot[x][y] = distPlot[i][k];
                 //System.out.println("Inner");
                 distPlot[i][k] = new PNode(0,0,0,0);
-                return distPlot;
+                return balance(distPlot);
               }
             }
           }
@@ -158,7 +180,7 @@ public class FOW{
         //
       }
     }
-    return distPlot;
+    return balance(distPlot);
   }
   //Updates the probability distribution based on the agents observations;
   public static PNode[][] obsUpdate(PNode[][] distPlot, Node[][] grid, String[][] observations){
@@ -461,7 +483,6 @@ public class FOW{
   }
   //Makes our agent move: Problem number 4
   public static Node[][] movement(Node[][] grid, PNode[][] distPlot, int turn){
-
     if(turn == 0){
       boolean flag = true;
       int[] move = new int[4];
@@ -470,30 +491,83 @@ public class FOW{
         for(int k = 0; k<distPlot.length; k++){
           if(distPlot[i][k].isOurs){
             flag = false;
-            double current =0;
-            int x1, y1 = 0;
+            double current =-20;
+            int x1 = 0;
+            int y1 = 0;
             switch(grid[i][k].type){
               case 'w':
-                
+                for(int tempx=-1; tempx<=1; tempx++){
+                  for(int tempy=-1; tempy<=1; tempy++){
+                    int x = i + tempx;
+                    int y = k + tempy;
+                    if(x <0 || y<0 || x>=grid.length || y>=grid.length || (tempx==0 && tempy==0) ){
+                      continue;
+                    } else if( distPlot[x][y].P==1 || distPlot[x][y].isOurs){
+                      continue;
+                    }
+                    double value = distPlot[x][y].M -(2*distPlot[x][y].W) - (.5*distPlot[x][y].W) - distPlot[x][y].P;
+                    if(current<value){
+                      current = value;
+                      x1 = x;
+                      y1 = y;
+                    }
+
+                  }
+                }
+
                 break;
               case 'm':
+                for(int tempx=-1; tempx<=1; tempx++){
+                  for(int tempy=-1; tempy<=1; tempy++){
+                    int x = i + tempx;
+                    int y = k + tempy;
+                    if(x <0 || y<0 || x>=grid.length || y>=grid.length || (tempx==0 && tempy==0) ){
+                      continue;
+                    } else if( distPlot[x][y].P==1 || distPlot[x][y].isOurs){
+                      continue;
+                    }
+                    double value = distPlot[x][y].H -(2*distPlot[x][y].W) - (.5*distPlot[x][y].M) - distPlot[x][y].P;
+                    if(current<value){
+                      current = value;
+                      x1 = x;
+                      y1 = y;
+                    }
 
+                  }
+                }
                 break;
               case 'h':
+                for(int tempx=-1; tempx<=1; tempx++){
+                  for(int tempy=-1; tempy<=1; tempy++){
+                    int x = i + tempx;
+                    int y = k + tempy;
+                    if(x <0 || y<0 || x>=grid.length || y>=grid.length || (tempx==0 && tempy==0) ){
+                      continue;
+                    } else if( distPlot[x][y].P==1 || distPlot[x][y].isOurs){
+                      continue;
+                    }
+                    double value = distPlot[x][y].W -(2*distPlot[x][y].M) - (.5*distPlot[x][y].H) - distPlot[x][y].P;
+                    if(current<value){
+                      current = value;
+                      x1 = x;
+                      y1 = y;
+                    }
 
+                  }
+                }
                 break;
             }
             if(current>max){
-              move = {i,k,x1,y1}
+              int[] setter = {i,k,x1,y1};
+              move = setter;
               max = current;
             }
           }
-
         }
-
       }
+
       if(flag){return null;}
-      Node winner = grid[move[2]][move[3]].resolve(grid[move[0]][move[1]);
+      Node winner = grid[move[2]][move[3]].resolve(grid[move[0]][move[1]]);
       grid[move[2]][move[3]] = new Node(winner);
       grid[move[0]][move[1]] = new Node(move[0],move[1]);
       return grid;
