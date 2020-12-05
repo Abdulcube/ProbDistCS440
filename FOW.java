@@ -18,10 +18,10 @@ public class FOW{
         if(distPlot[i][k].isOurs || distPlot[i][k].P == 1.0){
           result[i][k] = new PNode(distPlot[i][k]);
           continue;
-        } /*else if(distPlot[i][k].M == 1.0 || distPlot[i][k].W == 1.0 || distPlot[i][k].H == 1.0){
+        } else if(distPlot[i][k].M == 1.0 || distPlot[i][k].W == 1.0 || distPlot[i][k].H == 1.0){
           result[i][k] = new PNode(distPlot[i][k]);
           continue;
-        }*/
+        }
         result[i][k] = new PNode(distPlot[i][k]);
         double paran = 1-((double)1/(double)away);
         double sum = 0;
@@ -434,7 +434,46 @@ public class FOW{
 
         }
         //Needs to narrow down the pit location
-        if(!current.contains("P") && grid[x][y].side == 0){
+        if(current.contains("P") && grid[x][y].side == 0){/*
+          System.out.println("Lgoma: "+x + ", " +y);
+          int levels = 0;
+          int[] parts = new int[3];
+          for (int i1 = -1; i1 <= 1 ; i1++) {
+            int i = y + i1;
+            if(i<0   || i>=distPlot.length){
+              continue;
+            }
+            boolean flag = true;
+            parts[1+i1] = 0;
+            double sum = 0;
+            for (int k = 0; k < distPlot.length ; k++) {
+              if(distPlot[k][i].P == 1.0){
+                  flag = false;
+              } else {sum+=distPlot[k][i].P;}
+             //System.out.println("Inside: "+i + ", " +k +" : "+ distPlot[k][i].P);
+           }
+           if(flag && sum != 0){
+             levels++;
+             parts[1+i1] = 1;
+           }
+           System.out.println("Yer "+ i + " Sum: " + sum + " levels: " + levels);
+         }
+         if(levels == 0){
+           System.out.println("Pit Location error, Please consult");
+           return distPlot;
+         }
+           for (int i1 = -1; i1 <= 1 ; i1++) {
+             if(parts[1+i1] == 0){
+               continue;
+             }
+             for (int k = 0; k < distPlot.length ; k++) {
+               if(distPlot[k][i].P == 1.0){
+                   flag = false;
+               } else {sum+=distPlot[k][i].P;}
+              //System.out.println("Inside: "+i + ", " +k +" : "+ distPlot[k][i].P);
+            }
+          }*/
+       } else {
           for (int i = -1; i <= 1 ; i++) {
             for (int k = -1; k <= 1 ; k++) {
               int x1 = i +x;
@@ -505,7 +544,7 @@ public class FOW{
                     } else if( distPlot[x][y].P==1 || distPlot[x][y].isOurs){
                       continue;
                     }
-                    double value = distPlot[x][y].M -(2*distPlot[x][y].W) - (.5*distPlot[x][y].W) - distPlot[x][y].P;
+                    double value = distPlot[x][y].M -(2*distPlot[x][y].H) - (.5*distPlot[x][y].W) - distPlot[x][y].P;
                     if(current<value){
                       current = value;
                       x1 = x;

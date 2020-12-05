@@ -61,12 +61,9 @@ public class Execv {
 				if(b.Board == null){System.exit(0);}
 				d.updateBoard();
 				distPlot = (new FOW(distPlot, b.Board)).distPlot;
-				traverse(distPlot);
 				//2
 				distPlot = FOW.PlayerMovement(b.Board, distPlot);
-				traverse(distPlot);
 				obs = FOW.obsCheck(b.Board);
-				traverse(distPlot);
 				distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
 				traverse(distPlot);
 				//3
@@ -137,7 +134,8 @@ public class Execv {
 				if(distPlot[i][j].isOurs == true){
 					System.out.print("Age : ");
 				} else {
-					System.out.print(""+Execv.round(distPlot[i][j].W,3)+ " : ");
+					//+ ", " + Execv.round(distPlot[i][j].P,3)
+					System.out.print(""+Execv.round(distPlot[i][j].M,3)+ " : ");
 					//System.out.print(""+distPlot[i][j].W+", "+distPlot[i][j].H + ", " + distPlot[i][j].M+", "+ distPlot[i][j].P +" :: " );
 				}
 			}
