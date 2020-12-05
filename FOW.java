@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.lang.Math;
 public class FOW{
 
   PNode[][] distPlot;
@@ -242,7 +243,8 @@ public class FOW{
           }
 
 
-        } else {
+        }
+        else {
           double sum = 0;
           for (int i = -1; i <= 1 ; i++) {
             for (int k = -1; k <= 1 ; k++) {
@@ -323,7 +325,8 @@ public class FOW{
           }
 
 
-        } else {
+        }
+        else {
           double sum = 0;
           for (int i = -1; i <= 1 ; i++) {
             for (int k = -1; k <= 1 ; k++) {
@@ -404,7 +407,8 @@ public class FOW{
           }
 
 
-        } else {
+        }
+        else {
           double sum = 0;
           for (int i = -1; i <= 1 ; i++) {
             for (int k = -1; k <= 1 ; k++) {
@@ -434,8 +438,31 @@ public class FOW{
 
         }
         //Needs to narrow down the pit location
-        if(current.contains("P") && grid[x][y].side == 0){/*
-          System.out.println("Lgoma: "+x + ", " +y);
+        if(current.contains("P") && grid[x][y].side == 0){
+          int sensed = 0;
+          for(int counter = 2; counter <current.length(); counter++){
+            if(current.charAt(counter) == 'P'){
+              sensed++;
+            }
+          }
+          double summer = 0;
+          for(int tempx=-1; tempx<=1; tempx++){
+            for(int tempy=-1; tempy<=1; tempy++){
+              int i = x + tempx;
+              int k = y + tempy;
+              if(i <0 || k<0 || i>=grid.length || k>=grid.length || (tempx==0 && tempy==0) ){
+                continue;
+              }
+              if(distPlot[k][i].P==1){
+                sensed--;
+              } else {
+                summer+=distPlot[k][i].P;
+              }
+            }
+          }
+          if(sensed==0){
+            return distPlot;
+          }
           int levels = 0;
           int[] parts = new int[3];
           for (int i1 = -1; i1 <= 1 ; i1++) {
@@ -448,31 +475,57 @@ public class FOW{
             double sum = 0;
             for (int k = 0; k < distPlot.length ; k++) {
               if(distPlot[k][i].P == 1.0){
-                  flag = false;
+                flag = false;
               } else {sum+=distPlot[k][i].P;}
-             //System.out.println("Inside: "+i + ", " +k +" : "+ distPlot[k][i].P);
-           }
-           if(flag && sum != 0){
-             levels++;
-             parts[1+i1] = 1;
-           }
-           System.out.println("Yer "+ i + " Sum: " + sum + " levels: " + levels);
-         }
-         if(levels == 0){
-           System.out.println("Pit Location error, Please consult");
-           return distPlot;
-         }
-           for (int i1 = -1; i1 <= 1 ; i1++) {
-             if(parts[1+i1] == 0){
-               continue;
-             }
-             for (int k = 0; k < distPlot.length ; k++) {
-               if(distPlot[k][i].P == 1.0){
-                   flag = false;
-               } else {sum+=distPlot[k][i].P;}
-              //System.out.println("Inside: "+i + ", " +k +" : "+ distPlot[k][i].P);
+              if(distPlot[k][i].P<0||distPlot[k][i].P> 1 || Double.isNaN(distPlot[k][i].P)){distPlot[k][i].P = 0;}
             }
-          }*/
+            if(flag && sum != 0 && !Double.isNaN(sum)){
+              levels++;
+              parts[1+i1] = 1;
+            }
+          }
+
+          if(levels == 0){
+            System.out.println("Pit Location is either present or missing, Please consult");
+            return distPlot;
+          }
+          for(int tempx=-1; tempx<=1; tempx++){
+            for(int tempy=-1; tempy<=1; tempy++){
+              if(parts[1+tempx] == 0){
+                continue;
+              }
+              int i = x + tempx;
+              int k = y + tempy;
+              if(i <0 || k<0 || i>=grid.length || k>=grid.length || (tempx==0 && tempy==0) ){
+                continue;
+              }
+              if(distPlot[k][i].P==1){continue;}
+                distPlot[k][i].P = (double)distPlot[k][i].P* (double)((double)1/(double)summer);
+            }
+          }
+          for (int i1 = -1; i1 <= 1 ; i1++) {
+            if(parts[1+i1] == 0){
+              continue;
+            }
+            int i = y + i1;
+            if(i<0   || i>=distPlot.length){
+              continue;
+            }
+            for (int k = 0; k < distPlot.length ; k++) {
+              boolean test = false;
+              for (int x1 = -1; x1 <= 1; x1++) {
+                for (int y1 = -1; y1 <= 1; y1++) {
+                  if(x+x1 == k && y + y1 == i){
+                    test = true;
+
+                  } else {
+                  }
+                }
+              }
+              if(test){continue;}
+              distPlot[k][i].P = (1-(1/(double)levels)) * distPlot[k][i].P;
+            }
+          }
        } else {
           for (int i = -1; i <= 1 ; i++) {
             for (int k = -1; k <= 1 ; k++) {
@@ -549,11 +602,15 @@ public class FOW{
                       current = value;
                       x1 = x;
                       y1 = y;
+                    }else if (current==value){
+                      if(Math.random()>.5){
+                        current = value;
+                        x1 = x;
+                        y1 = y;
+                      }
                     }
-
                   }
                 }
-
                 break;
               case 'm':
                 for(int tempx=-1; tempx<=1; tempx++){
@@ -570,8 +627,13 @@ public class FOW{
                       current = value;
                       x1 = x;
                       y1 = y;
+                    } else if (current==value){
+                      if(Math.random()>.5){
+                        current = value;
+                        x1 = x;
+                        y1 = y;
+                      }
                     }
-
                   }
                 }
                 break;
@@ -590,8 +652,13 @@ public class FOW{
                       current = value;
                       x1 = x;
                       y1 = y;
+                    }else if (current==value){
+                      if(Math.random()>.5){
+                        current = value;
+                        x1 = x;
+                        y1 = y;
+                      }
                     }
-
                   }
                 }
                 break;

@@ -51,6 +51,7 @@ public class Execv {
 				//AI Turn table assuming switch is random
 				//4
 				obs = FOW.obsCheck(b.Board);
+				//FOW.obsTraverse(obs);
 				distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
 				traverse(distPlot);
 				//1
@@ -64,6 +65,7 @@ public class Execv {
 				//2
 				distPlot = FOW.PlayerMovement(b.Board, distPlot);
 				obs = FOW.obsCheck(b.Board);
+				//FOW.obsTraverse(obs);
 				distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
 				traverse(distPlot);
 				//3
@@ -135,7 +137,7 @@ public class Execv {
 					System.out.print("Age : ");
 				} else {
 					//+ ", " + Execv.round(distPlot[i][j].P,3)
-					System.out.print(""+Execv.round(distPlot[i][j].M,3)+ " : ");
+					System.out.print(""+Execv.round(distPlot[i][j].P,3)+ " : ");
 					//System.out.print(""+distPlot[i][j].W+", "+distPlot[i][j].H + ", " + distPlot[i][j].M+", "+ distPlot[i][j].P +" :: " );
 				}
 			}
