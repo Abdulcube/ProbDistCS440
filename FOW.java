@@ -6,20 +6,20 @@ public class FOW{
   Node[][] grid;
   int home;
   int away;
-  //Updates the distPlot based on the possible movements of the opponent.
-  public FOW(PNode[][] distPlot, Node[][] grid){
+  //Updates the distPlot based on the possible  random movements of the opponent.
+  public FOW(PNode[][] distPlot, Node[][] grid, String[][] observations){
     this.distPlot = distPlot;
     this.grid = grid;
     PNode[][] result = new PNode[distPlot.length][distPlot.length];
     numCount();
-    System.out.println("FOW");
-    //System.out.println("Home + away: " + home +", " + away);
+    System.out.println("FOW distribution:");
     for (int i = 0; i < distPlot.length; i++) {
       for (int k = 0; k < distPlot.length; k++) {
-        if(distPlot[i][k].isOurs || distPlot[i][k].P == 1.0){
+        if(distPlot[i][k].isOurs || distPlot[i][k].P == 1.0 ){
           result[i][k] = new PNode(distPlot[i][k]);
           continue;
-        } else if(distPlot[i][k].M == 1.0 || distPlot[i][k].W == 1.0 || distPlot[i][k].H == 1.0){
+        }
+        if(!isObserved(i,k, observations)){
           result[i][k] = new PNode(distPlot[i][k]);
           continue;
         }
@@ -27,72 +27,226 @@ public class FOW{
         double paran = 1-((double)1/(double)away);
         double sum = 0;
         int counter = 0;
-        //System.out.println("Current "+ i+ ", "+k);
         //Wumpus
-        sum = 0;
-        for (int x = -1; x <= 1; x++) {
-          for (int y = -1; y <= 1; y++) {
-            int x1 = i +x;
-            int y1 = k +y;
-            //System.out.println("yoooo "+ x1+y1);
-            if((x == 0 && y == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
-              continue;
+        if(distPlot[i][k].M != 1.0 && distPlot[i][k].H != 1.0){
+          sum = 0;
+          for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+              int x1 = i +x;
+              int y1 = k +y;
+              if((x == 0 && y == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                continue;
+              }
+              counter++;
+              if(totalMoves(x1,y1)==0){
+                continue;
+              }
+              sum += (double)distPlot[x1][y1].W * (double)((double)1/((double)away*totalMoves(x1,y1)));
             }
-            counter++;
-            if(totalMoves(x1,y1)==0){
-              continue;
-            }
-            sum += (double)distPlot[x1][y1].W * (double)((double)1/((double)away*totalMoves(x1,y1)));
           }
-        }
-        //System.out.println("Paran: " + paran + " : distPlot.W: " + distPlot[i][k].W + " : Sum : "+ sum);
-        result[i][k].W = (paran*distPlot[i][k].W) + sum;
 
+          result[i][k].W = (paran*distPlot[i][k].W) + sum;
+        }
         //Hero
-        sum = 0;
-        for (int x = -1; x <= 1; x++) {
-          for (int y = -1; y <= 1; y++) {
-            int x1 = i +x;
-            int y1 = k +y;
-            //System.out.println("yoooo "+ x1+y1);
-            if((x == 0 && y == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
-              continue;
+        if(distPlot[i][k].M != 1.0 && distPlot[i][k].W != 1.0){
+          sum = 0;
+          for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+              int x1 = i +x;
+              int y1 = k +y;
+              if((x == 0 && y == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                continue;
+              }
+              counter++;
+              if(totalMoves(x1,y1)==0){
+                continue;
+              }
+              sum += distPlot[x1][y1].H * (double)((double)1/((double)away*(double)totalMoves(x1,y1)));
             }
-            counter++;
-            if(totalMoves(x1,y1)==0){
-              continue;
-            }
-
-            sum += (double)distPlot[x1][y1].H * (double)((double)1/((double)away*totalMoves(x1,y1)));
           }
+          result[i][k].H = (paran*distPlot[i][k].H) + sum;
+          //System.out.println("" + paran + ", " + sum + ", " + totalMoves(i,k));
         }
-        result[i][k].H = (paran*distPlot[i][k].H) + sum;
+
         //Mage
-        sum = 0;
-        for (int x = -1; x <= 1; x++) {
-          for (int y = -1; y <= 1; y++) {
-            int x1 = i +x;
-            int y1 = k +y;
-            //System.out.println("yoooo "+ x1+y1);
-            if((x == 0 && y == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
-              continue;
+        if(distPlot[i][k].H != 1.0 && distPlot[i][k].W != 1.0){
+          sum = 0;
+          for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+              int x1 = i +x;
+              int y1 = k +y;
+              if((x == 0 && y == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                continue;
+              }
+              counter++;
+              if(totalMoves(x1,y1)==0){
+                continue;
+              }
+              sum += (double)distPlot[x1][y1].M * (double)((double)1/((double)away*(double)totalMoves(x1,y1)));
             }
-            counter++;
-            if(totalMoves(x1,y1)==0){
-              continue;
-            }
-
-            sum += (double)distPlot[x1][y1].M * (double)((double)1/((double)away*(double)totalMoves(x1,y1)));
           }
+          result[i][k].M = ((double)paran*distPlot[i][k].M) + (double)sum;
         }
-        //System.out.println("Sums:"+  sum);
-        result[i][k].M = ((double)paran*distPlot[i][k].M) + (double)sum;
-
         // Next steps
       }
     }
     this.distPlot = result;
-    //Execv.traverse(result);
+  }
+  //Updates the distPlot based on the possible measured movements of the opponent.
+  public FOW(PNode[][] distPlot, Node[][] grid, String[][] observations, int Estimator){
+    System.out.println("Logma");
+    this.distPlot = distPlot;
+    this.grid = grid;
+    PNode[][] result = new PNode[distPlot.length][distPlot.length];
+    numCount();
+    int totalValues = away + proximitySum();
+    //System.out.println("Total " + totalValues);
+    System.out.println("FOW with Estimation");
+    for (int i = 0; i < distPlot.length; i++) {
+      for (int k = 0; k < distPlot.length; k++) {
+        if(distPlot[i][k].isOurs || distPlot[i][k].P == 1.0 ){
+          result[i][k] = new PNode(distPlot[i][k]);
+          continue;
+        }
+        if(!isObserved(i,k, observations)){
+          result[i][k] = new PNode(distPlot[i][k]);
+          continue;
+        }
+        result[i][k] = new PNode(distPlot[i][k]);
+        //double paran = 1-((double)1/(double)away);
+        double sum = 0;
+        int counter = 0;
+        //Wumpus
+        if(distPlot[i][k].M != 1.0 && distPlot[i][k].H != 1.0){
+          sum = 0;
+          for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+              int x1 = i +x;
+              int y1 = k +y;
+              if((x == 0 && y == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                continue;
+              }
+              counter++;
+              if(totalMoves(x1,y1)==0){
+                continue;
+              }
+              sum += (double)distPlot[x1][y1].W * (double)((double)1 + surronding(x1,y1)/((double)totalValues*totalMoves(x1,y1)));
+            }
+          }
+          result[i][k].W = ((1-((double)1/(double)totalValues))*distPlot[i][k].W) + sum;
+        }
+
+
+        //Hero
+        if(distPlot[i][k].M != 1.0 && distPlot[i][k].W != 1.0){
+          sum = 0;
+          for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+              int x1 = i +x;
+              int y1 = k +y;
+              if((x == 0 && y == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                continue;
+              }
+              counter++;
+              if(totalMoves(x1,y1)==0){
+                continue;
+              }
+              sum += (double)distPlot[x1][y1].H * (double)((double)1 + surronding(x1,y1)/((double)totalValues*totalMoves(x1,y1)));
+            }
+          }
+          result[i][k].H = ((1-((double)1/(double)totalValues))*distPlot[i][k].H) + sum;
+        }
+
+
+        //Mage
+        if(distPlot[i][k].H != 1.0 && distPlot[i][k].W != 1.0){
+          sum = 0;
+          for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+              int x1 = i +x;
+              int y1 = k +y;
+              if((x == 0 && y == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                continue;
+              }
+              counter++;
+              if(totalMoves(x1,y1)==0){
+                continue;
+              }
+              sum += (double)distPlot[x1][y1].M * (double)((double)1 + surronding(x1,y1)/((double)totalValues*totalMoves(x1,y1)));
+            }
+          }
+          result[i][k].M = ((double)(1-((double)1/(double)totalValues))*distPlot[i][k].M) + (double)sum;
+        }
+
+      }
+    }
+    this.distPlot = result;
+  }
+
+  public boolean isObserved(int i, int k, String[][] Observation){
+    int totalaway = 0;
+
+
+
+    for(int tempx=-1; tempx<=1; tempx++){
+      for(int tempy=-1; tempy<=1; tempy++){
+        int x = i + tempx;
+        int y = k + tempy;
+        if(x <0 || y<0 || x>=grid.length || y>=grid.length || (tempx==0 && tempy==0) ){
+          continue;
+        }
+        if(Observation[x][y].equals("") && grid[x][y].side == 0){
+          System.out.println(" here");
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+  // Returns the sum of all possible surrounding values
+  public int proximitySum(){
+    int totalaway = 0;
+    for(int i = 0; i<distPlot.length; i++){
+      for(int k = 0; k<distPlot.length; k++){
+        double sum = distPlot[i][k].M + distPlot[i][k].H + distPlot[i][k].W;
+
+        if(distPlot[i][k].isOurs || sum == 0 || distPlot[i][k].P == 1){
+          continue;
+        }
+
+        for(int tempx=-1; tempx<=1; tempx++){
+          for(int tempy=-1; tempy<=1; tempy++){
+            int x = i + tempx;
+            int y = k + tempy;
+            if(x <0 || y<0 || x>=grid.length || y>=grid.length || (tempx==0 && tempy==0) ){
+              continue;
+            }
+            if(distPlot[x][y].isOurs){
+              totalaway++;
+            }
+          }
+        }
+      }
+    }
+    return totalaway;
+  }
+  //counts the number of surrounding values the piece has
+  public int surronding(int i, int k){
+    int totalaway = 0;
+    for(int tempx=-1; tempx<=1; tempx++){
+      for(int tempy=-1; tempy<=1; tempy++){
+        int x = i + tempx;
+        int y = k + tempy;
+        if(x <0 || y<0 || x>=grid.length || y>=grid.length || (tempx==0 && tempy==0) ){
+          continue;
+        }
+        if(distPlot[x][y].isOurs){
+          totalaway++;
+        }
+      }
+    }
+
+    return totalaway;
   }
   //counts the number of agents pieces and opponent
   public void numCount(){
@@ -112,22 +266,22 @@ public class FOW{
   //computes the total number of moves a piece can make
   public int totalMoves(int x, int y){
     int moves = 0;
-
     for(int i = -1; i<=1; i++){
       for(int k = -1; k<=1; k++){
         int x1 = i +x;
         int y1 = k +y;
         if((i == 0 && k == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
           continue;
+        } else if(distPlot[x1][y1].H == 1 || distPlot[x1][y1].M == 1 || distPlot[x1][y1]. W == 1 || distPlot[x1][y1].P == 1){
+          continue;
         } else {
           moves++;
         }
       }
     }
-    //System.out.println(moves);
     return moves;
   }
-
+  // Makes all the sum values out of one
   public static PNode[][] balance(PNode[][] distPlot){
     double sum =0;
     for(int i = 0; i<distPlot.length; i++){
@@ -192,7 +346,7 @@ public class FOW{
           continue;
         }
         if(current.contains("S") && grid[x][y].side == 0){
-          //  System.out.println("Stench");
+          //System.out.println("Stench");
           double sum =0;
           for (int i = -1; i <= 1 ; i++) {
             for (int k = -1; k <= 1 ; k++) {
@@ -238,7 +392,7 @@ public class FOW{
                 }
               }
               if(test){continue;}
-              distPlot[i][k].W = distPlot[i][k].W * ((count[0]-1)/count[0]);
+              distPlot[i][k].W = distPlot[i][k].W * ((count[1]-1)/count[1]);
             }
           }
 
@@ -402,7 +556,7 @@ public class FOW{
                 }
               }
               if(test){continue;}
-              distPlot[i][k].H = distPlot[i][k].H * ((count[0]-1)/count[0]);
+              distPlot[i][k].H = distPlot[i][k].H * ((count[2]-1)/count[2]);
             }
           }
 
@@ -461,7 +615,7 @@ public class FOW{
             }
           }
           if(sensed==0){
-            return distPlot;
+            continue;
           }
           int levels = 0;
           int[] parts = new int[3];
@@ -486,7 +640,7 @@ public class FOW{
           }
 
           if(levels == 0){
-            System.out.println("Pit Location is either present or missing, Please consult");
+            //System.out.println("Pit Location is either present or missing, Please consult");
             return distPlot;
           }
           for(int tempx=-1; tempx<=1; tempx++){
@@ -500,7 +654,7 @@ public class FOW{
                 continue;
               }
               if(distPlot[k][i].P==1){continue;}
-                distPlot[k][i].P = (double)distPlot[k][i].P* (double)((double)1/(double)summer);
+              distPlot[k][i].P = (double)distPlot[k][i].P* (double)((double)1/(double)summer);
             }
           }
           for (int i1 = -1; i1 <= 1 ; i1++) {
@@ -526,7 +680,8 @@ public class FOW{
               distPlot[k][i].P = (1-(1/(double)levels)) * distPlot[k][i].P;
             }
           }
-       } else {
+        }
+        else {
           for (int i = -1; i <= 1 ; i++) {
             for (int k = -1; k <= 1 ; k++) {
               int x1 = i +x;
@@ -588,80 +743,80 @@ public class FOW{
             int y1 = 0;
             switch(grid[i][k].type){
               case 'w':
-                for(int tempx=-1; tempx<=1; tempx++){
-                  for(int tempy=-1; tempy<=1; tempy++){
-                    int x = i + tempx;
-                    int y = k + tempy;
-                    if(x <0 || y<0 || x>=grid.length || y>=grid.length || (tempx==0 && tempy==0) ){
-                      continue;
-                    } else if( distPlot[x][y].P==1 || distPlot[x][y].isOurs){
-                      continue;
-                    }
-                    double value = distPlot[x][y].M -(2*distPlot[x][y].H) - (.5*distPlot[x][y].W) - distPlot[x][y].P;
-                    if(current<value){
+              for(int tempx=-1; tempx<=1; tempx++){
+                for(int tempy=-1; tempy<=1; tempy++){
+                  int x = i + tempx;
+                  int y = k + tempy;
+                  if(x <0 || y<0 || x>=grid.length || y>=grid.length || (tempx==0 && tempy==0) ){
+                    continue;
+                  } else if( distPlot[x][y].P==1 || distPlot[x][y].isOurs){
+                    continue;
+                  }
+                  double value = distPlot[x][y].M -(2*distPlot[x][y].H) - (.5*distPlot[x][y].W) - distPlot[x][y].P;
+                  if(current<value){
+                    current = value;
+                    x1 = x;
+                    y1 = y;
+                  }else if (current==value){
+                    if(Math.random()>.5){
                       current = value;
                       x1 = x;
                       y1 = y;
-                    }else if (current==value){
-                      if(Math.random()>.5){
-                        current = value;
-                        x1 = x;
-                        y1 = y;
-                      }
                     }
                   }
                 }
-                break;
+              }
+              break;
               case 'm':
-                for(int tempx=-1; tempx<=1; tempx++){
-                  for(int tempy=-1; tempy<=1; tempy++){
-                    int x = i + tempx;
-                    int y = k + tempy;
-                    if(x <0 || y<0 || x>=grid.length || y>=grid.length || (tempx==0 && tempy==0) ){
-                      continue;
-                    } else if( distPlot[x][y].P==1 || distPlot[x][y].isOurs){
-                      continue;
-                    }
-                    double value = distPlot[x][y].H -(2*distPlot[x][y].W) - (.5*distPlot[x][y].M) - distPlot[x][y].P;
-                    if(current<value){
+              for(int tempx=-1; tempx<=1; tempx++){
+                for(int tempy=-1; tempy<=1; tempy++){
+                  int x = i + tempx;
+                  int y = k + tempy;
+                  if(x <0 || y<0 || x>=grid.length || y>=grid.length || (tempx==0 && tempy==0) ){
+                    continue;
+                  } else if( distPlot[x][y].P==1 || distPlot[x][y].isOurs){
+                    continue;
+                  }
+                  double value = distPlot[x][y].H -(2*distPlot[x][y].W) - (.5*distPlot[x][y].M) - distPlot[x][y].P;
+                  if(current<value){
+                    current = value;
+                    x1 = x;
+                    y1 = y;
+                  } else if (current==value){
+                    if(Math.random()>.5){
                       current = value;
                       x1 = x;
                       y1 = y;
-                    } else if (current==value){
-                      if(Math.random()>.5){
-                        current = value;
-                        x1 = x;
-                        y1 = y;
-                      }
                     }
                   }
                 }
-                break;
+              }
+              break;
               case 'h':
-                for(int tempx=-1; tempx<=1; tempx++){
-                  for(int tempy=-1; tempy<=1; tempy++){
-                    int x = i + tempx;
-                    int y = k + tempy;
-                    if(x <0 || y<0 || x>=grid.length || y>=grid.length || (tempx==0 && tempy==0) ){
-                      continue;
-                    } else if( distPlot[x][y].P==1 || distPlot[x][y].isOurs){
-                      continue;
-                    }
-                    double value = distPlot[x][y].W -(2*distPlot[x][y].M) - (.5*distPlot[x][y].H) - distPlot[x][y].P;
-                    if(current<value){
+              for(int tempx=-1; tempx<=1; tempx++){
+                for(int tempy=-1; tempy<=1; tempy++){
+                  int x = i + tempx;
+                  int y = k + tempy;
+                  if(x <0 || y<0 || x>=grid.length || y>=grid.length || (tempx==0 && tempy==0) ){
+                    continue;
+                  } else if( distPlot[x][y].P==1 || distPlot[x][y].isOurs){
+                    continue;
+                  }
+                  double value = distPlot[x][y].W -(2*distPlot[x][y].M) - (.5*distPlot[x][y].H) - distPlot[x][y].P;
+                  if(current<value){
+                    current = value;
+                    x1 = x;
+                    y1 = y;
+                  }else if (current==value){
+                    if(Math.random()>.5){
                       current = value;
                       x1 = x;
                       y1 = y;
-                    }else if (current==value){
-                      if(Math.random()>.5){
-                        current = value;
-                        x1 = x;
-                        y1 = y;
-                      }
                     }
                   }
                 }
-                break;
+              }
+              break;
             }
             if(current>max){
               int[] setter = {i,k,x1,y1};
@@ -736,5 +891,32 @@ public class FOW{
       }
       System.out.println();
     }
+  }
+  // Checks for winner
+  public static void game(Node[][] grid){
+    int home = 0;
+    int away = 0;
+    for(int i = 0; i<grid.length; i++){
+      for(int k = 0; k<grid.length; k++){
+        if(grid[i][k].side ==0){
+          home++;
+        } else if (grid[i][k].side ==1){
+          away++;
+        }
+      }
+    }
+    if(home == 0 && away == 0){
+      System.out.println("DRAW!!");
+      System.exit(0);
+    }
+    if(home != 0 && away == 0){
+      System.out.println("Home Wins!!");
+      System.exit(0);
+    }
+    if(home == 0 && away != 0){
+      System.out.println("Away Wins!!");
+      System.exit(0);
+    }
+
   }
 }

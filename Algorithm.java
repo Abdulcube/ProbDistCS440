@@ -30,7 +30,7 @@ public class Algorithm {
 				System.out.println("Game OVER White Wins!");
 				return;
 			}
-			System.out.println("Final Heuristic of Minimax Search: " + Math.abs(finalState.h));
+			//System.out.println("Final Heuristic of Minimax Search: " + Math.abs(finalState.h));
 			System.out.println("-----------------");
 			System.out.println();
 		} else {
@@ -49,7 +49,7 @@ public class Algorithm {
 				return;
 			}
 			System.out.println();
-			System.out.println("Final Heuristic of alphaBeta pruning with alphaBeta Search: " + Math.abs(finalState.h));
+			//System.out.println("Final Heuristic of alphaBeta pruning with alphaBeta Search: " + Math.abs(finalState.h));
 			System.out.println("-----------------");
 			System.out.println();
 		}

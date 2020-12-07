@@ -39,6 +39,9 @@ public class Execv {
 					}
 				}
 			}
+			System.out.print("Random decision(0) or weighted decision(1): ");
+			int weighted = IO.readInt();
+			System.out.println();
 			String[][] obs;
 			//obs is an array where each value of string is a type around it
 			//observations has the displot update
@@ -46,6 +49,44 @@ public class Execv {
 			2. observations
 			3. Player(Agent)
 			4. observations*/
+			if(weighted==1){
+				while(!k.equals(" ")){
+
+					//AI Turn table assuming switch is random
+					//4
+					obs = FOW.obsCheck(b.Board);
+					//FOW.obsTraverse(obs);
+					distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
+					traverse(distPlot);
+					//1
+					System.out.print("Press Enter when ready for opponent Movement: ");
+					k = IO.readString();
+					b.Board = FOW.movement(b.Board, distPlot,1);
+					if(b.Board == null){System.exit(0);}
+					d.updateBoard();
+					FOW.game(b.Board);
+					distPlot = FOW.PlayerMovement(b.Board, distPlot);
+					obs = FOW.obsCheck(b.Board);
+
+					distPlot = (new FOW(distPlot, b.Board, obs, 0)).distPlot;
+					//2
+					//FOW.obsTraverse(obs);
+					distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
+					traverse(distPlot);
+					//3
+					System.out.print("Press Enter when Player turn ends: ");
+					k = IO.readString();
+					b.Board = FOW.movement(b.Board, distPlot,0);
+					if(b.Board == null){System.exit(0);}
+					d.updateBoard();
+					FOW.game(b.Board);
+					distPlot = FOW.PlayerMovement(b.Board, distPlot);
+
+				}
+				System.out.println("Ended!");
+				System.exit(0);
+			}
+
 			while(!k.equals(" ")){
 
 				//AI Turn table assuming switch is random
@@ -61,10 +102,11 @@ public class Execv {
 				distPlot = FOW.PlayerMovement(b.Board, distPlot);
 				if(b.Board == null){System.exit(0);}
 				d.updateBoard();
-				distPlot = (new FOW(distPlot, b.Board)).distPlot;
-				//2
 				distPlot = FOW.PlayerMovement(b.Board, distPlot);
 				obs = FOW.obsCheck(b.Board);
+
+				distPlot = (new FOW(distPlot, b.Board, obs)).distPlot;
+				//2
 				//FOW.obsTraverse(obs);
 				distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
 				traverse(distPlot);
@@ -137,7 +179,7 @@ public class Execv {
 					System.out.print("Age : ");
 				} else {
 					//+ ", " + Execv.round(distPlot[i][j].P,3)
-					System.out.print(""+Execv.round(distPlot[i][j].P,3)+ " : ");
+					System.out.print(""+Execv.round(distPlot[i][j].H,5)+ " : ");
 					//System.out.print(""+distPlot[i][j].W+", "+distPlot[i][j].H + ", " + distPlot[i][j].M+", "+ distPlot[i][j].P +" :: " );
 				}
 			}
