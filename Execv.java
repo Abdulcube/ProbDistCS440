@@ -43,6 +43,8 @@ public class Execv {
 			int weighted = IO.readInt();
 			System.out.println();
 			String[][] obs;
+			d.distPlot = distPlot;
+			d.updateBoard();
 			//obs is an array where each value of string is a type around it
 			//observations has the displot update
 			/*1. opponent
@@ -55,32 +57,33 @@ public class Execv {
 					//AI Turn table assuming switch is random
 					//4
 					obs = FOW.obsCheck(b.Board);
-					//FOW.obsTraverse(obs);
-					distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
-					traverse(distPlot);
+					//Display the observation Matrix
+					FOW.obsTraverse(obs);
+					d.distPlot = FOW.obsUpdate(d.distPlot, b.Board, obs);
+					//Display probability distribution
+					//traverse(d.distPlot);
 					//1
 					System.out.print("Press Enter when ready for opponent Movement: ");
 					k = IO.readString();
-					b.Board = FOW.movement(b.Board, distPlot,1);
+					b.Board = FOW.movement(b.Board, d.distPlot,1);
 					if(b.Board == null){System.exit(0);}
 					d.updateBoard();
 					FOW.game(b.Board);
-					distPlot = FOW.PlayerMovement(b.Board, distPlot);
+					d.distPlot = FOW.PlayerMovement(b.Board, d.distPlot);
 					obs = FOW.obsCheck(b.Board);
-
-					distPlot = (new FOW(distPlot, b.Board, obs, 0)).distPlot;
+					d.distPlot = (new FOW(d.distPlot, b.Board, obs, 0)).distPlot;
+					d.distPlot = FOW.obsUpdate(d.distPlot, b.Board, obs);
 					//2
-					//FOW.obsTraverse(obs);
-					distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
-					traverse(distPlot);
+					//Display probability distribution
+					traverse(d.distPlot);
 					//3
 					System.out.print("Press Enter when Player turn ends: ");
 					k = IO.readString();
-					b.Board = FOW.movement(b.Board, distPlot,0);
+					b.Board = FOW.movement(b.Board, d.distPlot,0);
 					if(b.Board == null){System.exit(0);}
 					d.updateBoard();
 					FOW.game(b.Board);
-					distPlot = FOW.PlayerMovement(b.Board, distPlot);
+					d.distPlot = FOW.PlayerMovement(b.Board, d.distPlot);
 
 				}
 				System.out.println("Ended!");
@@ -92,31 +95,34 @@ public class Execv {
 				//AI Turn table assuming switch is random
 				//4
 				obs = FOW.obsCheck(b.Board);
-				//FOW.obsTraverse(obs);
-				distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
-				traverse(distPlot);
+				//Display the observation Matrix
+				FOW.obsTraverse(obs);
+				d.distPlot = FOW.obsUpdate(d.distPlot, b.Board, obs);
+				//Display probability distribution
+				traverse(d.distPlot);
 				//1
 				System.out.print("Press Enter when ready for opponent Movement: ");
 				k = IO.readString();
-				b.Board = FOW.movement(b.Board, distPlot,1);
-				distPlot = FOW.PlayerMovement(b.Board, distPlot);
+				//if(k.equals("Fares")){d.toggle(true);} else {d.toggle(false);}
+				b.Board = FOW.movement(b.Board, d.distPlot,1);
 				if(b.Board == null){System.exit(0);}
 				d.updateBoard();
-				distPlot = FOW.PlayerMovement(b.Board, distPlot);
+				FOW.game(b.Board);
+				d.distPlot = FOW.PlayerMovement(b.Board, d.distPlot);
 				obs = FOW.obsCheck(b.Board);
-
-				distPlot = (new FOW(distPlot, b.Board, obs)).distPlot;
+				d.distPlot = (new FOW(d.distPlot, b.Board, obs)).distPlot;
+				d.distPlot = FOW.obsUpdate(d.distPlot, b.Board, obs);
 				//2
-				//FOW.obsTraverse(obs);
-				distPlot = FOW.obsUpdate(distPlot, b.Board, obs);
-				traverse(distPlot);
+				//Display probability distribution
+				traverse(d.distPlot);
 				//3
 				System.out.print("Press Enter when Player turn ends: ");
 				k = IO.readString();
-				b.Board = FOW.movement(b.Board, distPlot,0);
-				distPlot = FOW.PlayerMovement(b.Board, distPlot);
+				b.Board = FOW.movement(b.Board, d.distPlot,0);
 				if(b.Board == null){System.exit(0);}
 				d.updateBoard();
+				FOW.game(b.Board);
+				d.distPlot = FOW.PlayerMovement(b.Board, d.distPlot);
 
 			}
 			System.out.println("Ended!");

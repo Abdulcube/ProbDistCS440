@@ -751,7 +751,7 @@ public class FOW{
                   } else if( distPlot[x][y].P==1 || distPlot[x][y].isOurs){
                     continue;
                   }
-                  double value = distPlot[x][y].M -(2*distPlot[x][y].H) - (.5*distPlot[x][y].W) - distPlot[x][y].P;
+                  double value = distPlot[x][y].M -(2*distPlot[x][y].H) - (.5*distPlot[x][y].W) - (2*distPlot[x][y].P);
                   if(current<value){
                     current = value;
                     x1 = x;
@@ -776,7 +776,7 @@ public class FOW{
                   } else if( distPlot[x][y].P==1 || distPlot[x][y].isOurs){
                     continue;
                   }
-                  double value = distPlot[x][y].H -(2*distPlot[x][y].W) - (.5*distPlot[x][y].M) - distPlot[x][y].P;
+                  double value = distPlot[x][y].H -(2*distPlot[x][y].W) - (.5*distPlot[x][y].M) - (2*distPlot[x][y].P);
                   if(current<value){
                     current = value;
                     x1 = x;
@@ -801,7 +801,7 @@ public class FOW{
                   } else if( distPlot[x][y].P==1 || distPlot[x][y].isOurs){
                     continue;
                   }
-                  double value = distPlot[x][y].W -(2*distPlot[x][y].M) - (.5*distPlot[x][y].H) - distPlot[x][y].P;
+                  double value = distPlot[x][y].W -(2*distPlot[x][y].M) - (.5*distPlot[x][y].H) - (2*distPlot[x][y].P);
                   if(current<value){
                     current = value;
                     x1 = x;
