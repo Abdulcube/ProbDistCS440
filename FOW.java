@@ -94,7 +94,6 @@ public class FOW{
   }
   //Updates the distPlot based on the possible measured movements of the opponent.
   public FOW(PNode[][] distPlot, Node[][] grid, String[][] observations, int Estimator){
-    System.out.println("Logma");
     this.distPlot = distPlot;
     this.grid = grid;
     PNode[][] result = new PNode[distPlot.length][distPlot.length];
