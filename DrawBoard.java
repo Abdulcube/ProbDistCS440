@@ -137,7 +137,7 @@ public class DrawBoard {
 						g.setFont(new Font("Arial",Font.BOLD,20));
 						//Draw String in JPanel
 						g.setColor(new Color(0,0,0));
-						g.drawString("" + distPlot[x][k].M + "\n" + "  " + distPlot[x][k].H + System.lineSeparator() + "  " + distPlot[x][k].W + "\n" ,x*CSIZE+15,k*CSIZE+50);
+						g.drawString("" + Execv.round(distPlot[x][k].M,2) + " " + Execv.round(distPlot[x][k].H,2) + System.lineSeparator() + " " + Execv.round(distPlot[x][k].W,2) ,x*CSIZE+15,k*CSIZE+75);
 						g.setColor(new Color(first,second,second));
 
 						if (board.Board[x][k].type == 'm') {
