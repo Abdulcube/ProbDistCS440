@@ -264,11 +264,25 @@ public class DrawBoard {
 						g.setFont(new Font("Arial",Font.BOLD,(spacer + guyan)/dimension));
 						//Draw String in JPanel
 						g.setColor(new Color(0,0,0));
-
-						g.drawString("M: "+ Execv.round(distPlot[x][k].M,2) + "" ,x*CSIZE+15,k*CSIZE +(sizer/dimension));
-						g.drawString("H: "+ Execv.round(distPlot[x][k].H,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer + spacer)/dimension));
-						g.drawString("W: "+ Execv.round(distPlot[x][k].W,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer)/dimension));
-						g.drawString("P: "+ Execv.round(distPlot[x][k].P,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer+ spacer)/dimension));
+						if(true){
+							if(Execv.round(distPlot[x][k].M,2) != 0){
+								g.drawString("M: "+ Execv.round(distPlot[x][k].M,2) + "" ,x*CSIZE+15,k*CSIZE +(sizer/dimension));
+							}
+							if (Execv.round(distPlot[x][k].H,2) != 0) {
+								g.drawString("H: "+ Execv.round(distPlot[x][k].H,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer + spacer)/dimension));
+							}
+							if (Execv.round(distPlot[x][k].W,2) != 0) {
+								g.drawString("W: "+ Execv.round(distPlot[x][k].W,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer)/dimension));
+							}
+							if (Execv.round(distPlot[x][k].P,2) != 0) {
+								g.drawString("P: "+ Execv.round(distPlot[x][k].P,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer+ spacer)/dimension));
+							}
+						} else {
+							g.drawString("M: "+ Execv.round(distPlot[x][k].M,2) + "" ,x*CSIZE+15,k*CSIZE +(sizer/dimension));
+							g.drawString("H: "+ Execv.round(distPlot[x][k].H,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer + spacer)/dimension));
+							g.drawString("W: "+ Execv.round(distPlot[x][k].W,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer)/dimension));
+							g.drawString("P: "+ Execv.round(distPlot[x][k].P,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer+ spacer)/dimension));
+						}
 						/*//         Labeled
 						g.drawString(Execv.round(distPlot[x][k].M,2) + "%w" ,x*CSIZE+15,k*CSIZE +(sizer/dimension));
 						g.drawString(Execv.round(distPlot[x][k].H,2) + "%h" ,x*CSIZE+15,k*CSIZE +((sizer + spacer)/dimension));
