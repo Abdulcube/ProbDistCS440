@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 
@@ -29,7 +30,7 @@ public class DrawBoard {
 	PNode[][] distPlot;
 	String[][] obs;
 
-	JTextField prin = new JTextField();
+	JTextArea prin = new JTextArea();
 
 	JRadioButton jRadioButtonON;
 	JRadioButton jRadioButtonOFF;
@@ -103,7 +104,7 @@ public class DrawBoard {
 		jRadioButtonOFF = new JRadioButton();
 		jButton = new JButton("Update");
 		group = new ButtonGroup();
-		prin = new JTextField();
+		prin = new JTextArea();
 
 
 		jRadioButtonON.setText("Fog Of War");
@@ -112,7 +113,7 @@ public class DrawBoard {
 		jRadioButtonON.setBounds(20,610,120,50);
 		jRadioButtonOFF.setBounds(150,610,120,50);
 		jButton.setBounds(75, 650, 120, 50);
-		prin.setBounds(240, 620, 360, 50);
+		prin.setBounds(240, 620, 150, 100);
 
 		jRadioButtonOFF.setSelected(true);
 		prin.setEditable(false);
@@ -154,7 +155,7 @@ public class DrawBoard {
 		canvas = new Board();
 		canvas.setBounds(10, 10, XSIZE+1, XSIZE+1);
 
-		prin.setText("Nothing is on Radar");
+		//prin.setText("Nothing is on Radar");
 
 	}
 
@@ -179,6 +180,22 @@ public class DrawBoard {
 		}
 
 		public void paintComponent(Graphics g) {
+			String a = "";
+			if(obs != null) {
+				for(int p = 0; p < dimension; p ++) {
+					for(int y = 0; y < dimension; y ++) {
+						if(obs[y][p].equals("")) {
+							a = a.concat("       ,");
+						} else {
+							a = a.concat(obs[y][p] + ",");
+							System.out.println("---" + obs[p][y]);
+						}
+					}
+					a = a.concat("\n");
+				}
+				prin.setText(a);
+			} 
+			
 			for(int x = 0; x < dimension; x++) {
 				for(int k = 0; k < dimension; k++ ) {
 
@@ -252,7 +269,7 @@ public class DrawBoard {
 						g.drawString(Execv.round(distPlot[x][k].M,2) + "" ,x*CSIZE+15,k*CSIZE +(sizer/dimension));
 						g.drawString(Execv.round(distPlot[x][k].H,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer + spacer)/dimension));
 						g.drawString(Execv.round(distPlot[x][k].W,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer)/dimension));
-						g.drawString(Execv.round(distPlot[x][k].P,2) + "" ,xCSIZE+15,kCSIZE +((sizer+ spacer + spacer+ spacer)/dimension));
+						g.drawString(Execv.round(distPlot[x][k].P,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer+ spacer)/dimension));
 						/*//         Labeled
 						g.drawString(Execv.round(distPlot[x][k].M,2) + "%w" ,x*CSIZE+15,k*CSIZE +(sizer/dimension));
 						g.drawString(Execv.round(distPlot[x][k].H,2) + "%h" ,x*CSIZE+15,k*CSIZE +((sizer + spacer)/dimension));
