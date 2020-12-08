@@ -4,7 +4,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.*; 
+import java.awt.event.*;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -19,7 +19,7 @@ public class DrawBoard {
 	int spacer = 0;
 	int sizer = 0;
 	int minal = 0;
-	
+
 	int first = 153;
 	int second =0;
 	int dimension = 3; //default
@@ -27,26 +27,27 @@ public class DrawBoard {
 	Board canvas;
 	BoardGenerator board;
 	PNode[][] distPlot;
-	
-	
+	String[][] obs;
+
 	JTextField prin = new JTextField();
-	
+
 	JRadioButton jRadioButtonON;
 	JRadioButton jRadioButtonOFF;
-	
+
 	JButton jButton;
-	
+
 	ButtonGroup group;
-	
-	
-	
-	
+
+
+
+
 	//Default Constructor - 3 x 3
 	public DrawBoard() {
 		this.dimension = 3;
 		this.board = new BoardGenerator();
 		CSIZE = XSIZE / dimension;
 		distPlot = null;
+		obs = null;
 
 		init();
 	}
@@ -54,6 +55,7 @@ public class DrawBoard {
 	//Constructor for size of board.
 	public DrawBoard(BoardGenerator b) {
 		distPlot = null;
+		obs = null;
 		this.dimension = b.dimension;
 		this.board = b;
 		this.board.turn = b.turn;
@@ -91,54 +93,54 @@ public class DrawBoard {
 		frame.getContentPane().setLayout(null);
 
 		/*
-		 * 
+		 *
 		 */
-		
-		
 
-		
-		jRadioButtonON = new JRadioButton(); 
-		jRadioButtonOFF = new JRadioButton(); 
+
+
+
+		jRadioButtonON = new JRadioButton();
+		jRadioButtonOFF = new JRadioButton();
 		jButton = new JButton("Update");
-		group = new ButtonGroup(); 
+		group = new ButtonGroup();
 		prin = new JTextField();
-		
-		
+
+
 		jRadioButtonON.setText("Fog Of War");
 		jRadioButtonOFF.setText("Normal");
-		
+
 		jRadioButtonON.setBounds(20,610,120,50);
 		jRadioButtonOFF.setBounds(150,610,120,50);
 		jButton.setBounds(75, 650, 120, 50);
 		prin.setBounds(240, 620, 360, 50);
-		
+
 		jRadioButtonOFF.setSelected(true);
 		prin.setEditable(false);
-		
+
 		group.add(jRadioButtonON);
 		group.add(jRadioButtonOFF);
-		
+
 		frame.add(prin);
 		frame.add(jButton);
 		frame.add(jRadioButtonON);
 		frame.add(jRadioButtonOFF);
 
-		
-		jButton.addActionListener(new ActionListener() { 
-	            // Anonymous class. 
-	  
-	            public void actionPerformed(ActionEvent e) 
-	            {  
-	                if (jRadioButtonON.isSelected()) { 
+
+		jButton.addActionListener(new ActionListener() {
+	            // Anonymous class.
+
+	            public void actionPerformed(ActionEvent e)
+	            {
+	                if (jRadioButtonON.isSelected()) {
 	                	toggle(false);
-	                } else if (jRadioButtonOFF.isSelected()) { 
+	                } else if (jRadioButtonOFF.isSelected()) {
 	                	toggle(true);
-	                } 
-	            } 
-	     }); 
-		
+	                }
+	            }
+	     });
+
 		 /*
-		  * 
+		  *
 		  */
 		initBoard();
 
@@ -151,7 +153,7 @@ public class DrawBoard {
 
 		canvas = new Board();
 		canvas.setBounds(10, 10, XSIZE+1, XSIZE+1);
-		
+
 		prin.setText("Nothing is on Radar");
 
 	}
@@ -190,7 +192,7 @@ public class DrawBoard {
 						g.setColor(new Color(75,75,75)); //Dark Grey
 						g.fillOval(x*CSIZE,k*CSIZE,CSIZE,CSIZE);
 					}
-					
+
 					//For Peices to be Drawn
 					if(board.Board[x][k].side == 0) {
 						//Cream
@@ -199,11 +201,11 @@ public class DrawBoard {
 						//Dark
 						g.setColor(new Color(first,second,second));
 					}
-					
-					
-					
-					
-					
+
+
+
+
+
 					if(distPlot == null || distPlot[x][k].isOurs){
 						if (board.Board[x][k].type == 'm') {
 
@@ -223,42 +225,42 @@ public class DrawBoard {
 							//Draw String in JPanel
 							g.drawString("W",x*CSIZE+5,k*CSIZE+(140/dimension));
 						} //For Pieces to be Drawn
-						
-						
+
+
 					} else {
 						if(dimension == 3) {
 							spacer = 65;
 							sizer = 250;
-							
+
 							guyan = 20;
 						} else if (dimension == 6) {
 							spacer = 80;
 							sizer = 250;
-							
+
 							guyan = 30;
 						} else {
 							spacer = 120;
 							sizer = 250;
-							
+
 							guyan = 40;
 							minal = -30;
 						}
 						g.setFont(new Font("Arial",Font.BOLD,(spacer + guyan)/dimension));
 						//Draw String in JPanel
 						g.setColor(new Color(0,0,0));
-						
+
 						g.drawString(Execv.round(distPlot[x][k].M,2) + "" ,x*CSIZE+15,k*CSIZE +(sizer/dimension));
 						g.drawString(Execv.round(distPlot[x][k].H,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer + spacer)/dimension));
 						g.drawString(Execv.round(distPlot[x][k].W,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer)/dimension));
-						
+						g.drawString(Execv.round(distPlot[x][k].P,2) + "" ,xCSIZE+15,kCSIZE +((sizer+ spacer + spacer+ spacer)/dimension));
 						/*//         Labeled
 						g.drawString(Execv.round(distPlot[x][k].M,2) + "%w" ,x*CSIZE+15,k*CSIZE +(sizer/dimension));
 						g.drawString(Execv.round(distPlot[x][k].H,2) + "%h" ,x*CSIZE+15,k*CSIZE +((sizer + spacer)/dimension));
 						g.drawString(Execv.round(distPlot[x][k].W,2) + "%m" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer)/dimension));
 						*/
-						
+
 						g.setColor(new Color(first,second,second));
-						
+
 						if (board.Board[x][k].type == 'm') {
 
 							g.setFont(new Font("Arial",Font.BOLD,CSIZE/4));

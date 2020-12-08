@@ -57,6 +57,7 @@ public class Execv {
 					//AI Turn table assuming switch is random
 					//4
 					obs = FOW.obsCheck(b.Board);
+					d.obs = obs;
 					//Display the observation Matrix
 					FOW.obsTraverse(obs);
 					d.distPlot = FOW.obsUpdate(d.distPlot, b.Board, obs);
@@ -72,6 +73,7 @@ public class Execv {
 					FOW.game(b.Board);
 					d.distPlot = FOW.PlayerMovement(b.Board, d.distPlot);
 					obs = FOW.obsCheck(b.Board);
+					d.obs = obs;
 					d.distPlot = (new FOW(d.distPlot, b.Board, obs, 0)).distPlot;
 					d.distPlot = FOW.obsUpdate(d.distPlot, b.Board, obs);
 					//2
@@ -100,6 +102,7 @@ public class Execv {
 				obs = FOW.obsCheck(b.Board);
 				//Display the observation Matrix
 				FOW.obsTraverse(obs);
+				d.obs = obs;
 				d.distPlot = FOW.obsUpdate(d.distPlot, b.Board, obs);
 				//Display probability distribution
 				traverse(d.distPlot);
@@ -114,6 +117,7 @@ public class Execv {
 				FOW.game(b.Board);
 				d.distPlot = FOW.PlayerMovement(b.Board, d.distPlot);
 				obs = FOW.obsCheck(b.Board);
+				d.obs = obs;
 				d.distPlot = (new FOW(d.distPlot, b.Board, obs)).distPlot;
 				d.distPlot = FOW.obsUpdate(d.distPlot, b.Board, obs);
 				//2
