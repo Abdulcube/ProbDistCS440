@@ -61,7 +61,8 @@ public class Execv {
 					FOW.obsTraverse(obs);
 					d.distPlot = FOW.obsUpdate(d.distPlot, b.Board, obs);
 					//Display probability distribution
-					//traverse(d.distPlot);
+					d.updateBoard();
+
 					//1
 					System.out.print("Press Enter when ready for opponent Movement: ");
 					k = IO.readString();
@@ -75,6 +76,7 @@ public class Execv {
 					d.distPlot = FOW.obsUpdate(d.distPlot, b.Board, obs);
 					//2
 					//Display probability distribution
+					d.updateBoard();
 					traverse(d.distPlot);
 					//3
 					System.out.print("Press Enter when Player turn ends: ");
@@ -84,6 +86,7 @@ public class Execv {
 					d.updateBoard();
 					FOW.game(b.Board);
 					d.distPlot = FOW.PlayerMovement(b.Board, d.distPlot);
+
 
 				}
 				System.out.println("Ended!");
@@ -100,6 +103,7 @@ public class Execv {
 				d.distPlot = FOW.obsUpdate(d.distPlot, b.Board, obs);
 				//Display probability distribution
 				traverse(d.distPlot);
+				d.updateBoard();
 				//1
 				System.out.print("Press Enter when ready for opponent Movement: ");
 				k = IO.readString();
@@ -115,6 +119,7 @@ public class Execv {
 				//2
 				//Display probability distribution
 				traverse(d.distPlot);
+				d.updateBoard();
 				//3
 				System.out.print("Press Enter when Player turn ends: ");
 				k = IO.readString();

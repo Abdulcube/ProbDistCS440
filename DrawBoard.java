@@ -106,6 +106,11 @@ public class DrawBoard {
 					g.setColor(Color.BLACK);
 					g.drawRect(x*CSIZE,k*CSIZE,CSIZE,CSIZE);
 
+					if(board.Board[x][k].isPit == true) {
+						g.setColor(new Color(75,75,75)); //Dark Grey
+						g.fillOval(x*CSIZE,k*CSIZE,CSIZE,CSIZE);
+					}
+					
 					//For Peices to be Drawn
 					if(board.Board[x][k].side == 0) {
 						//Cream
@@ -137,7 +142,8 @@ public class DrawBoard {
 						g.setFont(new Font("Arial",Font.BOLD,20));
 						//Draw String in JPanel
 						g.setColor(new Color(0,0,0));
-						g.drawString("" + Execv.round(distPlot[x][k].M,2) + " " + Execv.round(distPlot[x][k].H,2) + System.lineSeparator() + " " + Execv.round(distPlot[x][k].W,2) ,x*CSIZE+15,k*CSIZE+75);
+
+						g.drawString("" + Execv.round(distPlot[x][k].M,2) + " " + Execv.round(distPlot[x][k].H,2) + " " + Execv.round(distPlot[x][k].W,2) ,x*CSIZE+15,k*CSIZE+75);
 						g.setColor(new Color(first,second,second));
 
 						if (board.Board[x][k].type == 'm') {
@@ -162,10 +168,7 @@ public class DrawBoard {
 
 
 
-					if(board.Board[x][k].isPit == true) {
-						g.setColor(new Color(75,75,75)); //Dark Grey
-						g.fillOval(x*CSIZE,k*CSIZE,CSIZE,CSIZE);
-					}
+
 
 					if(board.Board[x][k].isSelected == true) {
 						g.setColor(new Color(255,255,50)); //Yellow
