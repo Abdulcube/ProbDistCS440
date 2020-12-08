@@ -188,14 +188,13 @@ public class DrawBoard {
 							a = a.concat("       ,");
 						} else {
 							a = a.concat(obs[y][p] + ",");
-							System.out.println("---" + obs[p][y]);
 						}
 					}
 					a = a.concat("\n");
 				}
 				prin.setText(a);
-			} 
-			
+			}
+
 			for(int x = 0; x < dimension; x++) {
 				for(int k = 0; k < dimension; k++ ) {
 
@@ -266,10 +265,10 @@ public class DrawBoard {
 						//Draw String in JPanel
 						g.setColor(new Color(0,0,0));
 
-						g.drawString(Execv.round(distPlot[x][k].M,2) + "" ,x*CSIZE+15,k*CSIZE +(sizer/dimension));
-						g.drawString(Execv.round(distPlot[x][k].H,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer + spacer)/dimension));
-						g.drawString(Execv.round(distPlot[x][k].W,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer)/dimension));
-						g.drawString(Execv.round(distPlot[x][k].P,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer+ spacer)/dimension));
+						g.drawString("M: "+ Execv.round(distPlot[x][k].M,2) + "" ,x*CSIZE+15,k*CSIZE +(sizer/dimension));
+						g.drawString("H: "+ Execv.round(distPlot[x][k].H,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer + spacer)/dimension));
+						g.drawString("W: "+ Execv.round(distPlot[x][k].W,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer)/dimension));
+						g.drawString("P: "+ Execv.round(distPlot[x][k].P,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer+ spacer)/dimension));
 						/*//         Labeled
 						g.drawString(Execv.round(distPlot[x][k].M,2) + "%w" ,x*CSIZE+15,k*CSIZE +(sizer/dimension));
 						g.drawString(Execv.round(distPlot[x][k].H,2) + "%h" ,x*CSIZE+15,k*CSIZE +((sizer + spacer)/dimension));
