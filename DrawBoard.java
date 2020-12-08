@@ -247,9 +247,15 @@ public class DrawBoard {
 						//Draw String in JPanel
 						g.setColor(new Color(0,0,0));
 						
-						g.drawString(Execv.round(distPlot[x][k].M,2) + " " ,x*CSIZE+15,k*CSIZE +(sizer/dimension));
-						g.drawString(Execv.round(distPlot[x][k].H,2) + " " ,x*CSIZE+15,k*CSIZE +((sizer + spacer)/dimension));
-						g.drawString(Execv.round(distPlot[x][k].W,2) + " " ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer)/dimension));
+						g.drawString(Execv.round(distPlot[x][k].M,2) + "" ,x*CSIZE+15,k*CSIZE +(sizer/dimension));
+						g.drawString(Execv.round(distPlot[x][k].H,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer + spacer)/dimension));
+						g.drawString(Execv.round(distPlot[x][k].W,2) + "" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer)/dimension));
+						
+						/*//         Labeled
+						g.drawString(Execv.round(distPlot[x][k].M,2) + "%w" ,x*CSIZE+15,k*CSIZE +(sizer/dimension));
+						g.drawString(Execv.round(distPlot[x][k].H,2) + "%h" ,x*CSIZE+15,k*CSIZE +((sizer + spacer)/dimension));
+						g.drawString(Execv.round(distPlot[x][k].W,2) + "%m" ,x*CSIZE+15,k*CSIZE +((sizer+ spacer + spacer)/dimension));
+						*/
 						
 						g.setColor(new Color(first,second,second));
 						
