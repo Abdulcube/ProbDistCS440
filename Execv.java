@@ -44,7 +44,7 @@ public class Execv {
 			System.out.println();
 			String[][] obs;
 			d.distPlot = distPlot;
-			d.updateBoard();
+			//d.updateBoard();
 			//obs is an array where each value of string is a type around it
 			//observations has the displot update
 			/*1. opponent
@@ -99,6 +99,8 @@ public class Execv {
 
 				//AI Turn table assuming switch is random
 				//4
+				traverse(d.distPlot);
+
 				obs = FOW.obsCheck(b.Board);
 				//Display the observation Matrix
 				FOW.obsTraverse(obs);
@@ -113,12 +115,13 @@ public class Execv {
 				//if(k.equals("Fares")){d.toggle(true);} else {d.toggle(false);}
 				b.Board = FOW.movement(b.Board, d.distPlot,1);
 				if(b.Board == null){System.exit(0);}
-				d.updateBoard();
-				FOW.game(b.Board);
+				if(FOW.game(b.Board)){return;}
 				d.distPlot = FOW.PlayerMovement(b.Board, d.distPlot);
+				d.distPlot = (new FOW(d.distPlot, b.Board, obs)).distPlot;
+
 				obs = FOW.obsCheck(b.Board);
 				d.obs = obs;
-				d.distPlot = (new FOW(d.distPlot, b.Board, obs)).distPlot;
+				traverse(d.distPlot);
 				d.distPlot = FOW.obsUpdate(d.distPlot, b.Board, obs);
 				//2
 				//Display probability distribution
@@ -130,7 +133,7 @@ public class Execv {
 				b.Board = FOW.movement(b.Board, d.distPlot,0);
 				if(b.Board == null){System.exit(0);}
 				d.updateBoard();
-				FOW.game(b.Board);
+				if(FOW.game(b.Board)){return;}
 				d.distPlot = FOW.PlayerMovement(b.Board, d.distPlot);
 
 			}
@@ -186,7 +189,7 @@ public class Execv {
 	}
 
 	public static void traverse(PNode[][] distPlot){
-		System.out.println("<");
+		System.out.println("< Pits");
 		for(int j =0; j<distPlot.length; j++){
 			for(int i =0; i<distPlot.length; i++){
 			//	System.out.println("" + i + j);
@@ -194,13 +197,45 @@ public class Execv {
 					System.out.print("Age : ");
 				} else {
 					//+ ", " + Execv.round(distPlot[i][j].P,3)
-					System.out.print(""+Execv.round(distPlot[i][j].H,5)+ " : ");
+					System.out.print(""+Execv.round(distPlot[i][j].P,5)+ " : ");
 					//System.out.print(""+distPlot[i][j].W+", "+distPlot[i][j].H + ", " + distPlot[i][j].M+", "+ distPlot[i][j].P +" :: " );
 				}
 			}
 			System.out.println();
 		}
 		System.out.println(">");
+
+		/*System.out.println("< Mage");
+		for(int j =0; j<distPlot.length; j++){
+			for(int i =0; i<distPlot.length; i++){
+			//	System.out.println("" + i + j);
+				if(distPlot[i][j].isOurs == true){
+					System.out.print("Age : ");
+				} else {
+					//+ ", " + Execv.round(distPlot[i][j].P,3)
+					System.out.print(""+Execv.round(distPlot[i][j].M,5)+ " : ");
+					//System.out.print(""+distPlot[i][j].W+", "+distPlot[i][j].H + ", " + distPlot[i][j].M+", "+ distPlot[i][j].P +" :: " );
+				}
+			}
+			System.out.println();
+		}
+		System.out.println(">");
+
+		System.out.println("< Wumbo");
+		for(int j =0; j<distPlot.length; j++){
+			for(int i =0; i<distPlot.length; i++){
+			//	System.out.println("" + i + j);
+				if(distPlot[i][j].isOurs == true){
+					System.out.print("Age : ");
+				} else {
+					//+ ", " + Execv.round(distPlot[i][j].P,3)
+					System.out.print(""+Execv.round(distPlot[i][j].W,5)+ " : ");
+					//System.out.print(""+distPlot[i][j].W+", "+distPlot[i][j].H + ", " + distPlot[i][j].M+", "+ distPlot[i][j].P +" :: " );
+				}
+			}
+			System.out.println();
+		}
+		System.out.println(">");*/
 	}
 
 	public static double round(double value, int places) {

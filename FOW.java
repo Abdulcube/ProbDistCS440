@@ -15,7 +15,7 @@ public class FOW{
     System.out.println("FOW distribution:");
     for (int i = 0; i < distPlot.length; i++) {
       for (int k = 0; k < distPlot.length; k++) {
-        if(distPlot[i][k].isOurs || distPlot[i][k].P == 1.0 ){
+        if(grid[i][k].side == 0 || distPlot[i][k].P == 1.0 ){
           result[i][k] = new PNode(distPlot[i][k]);
           continue;
         }
@@ -46,6 +46,11 @@ public class FOW{
           }
 
           result[i][k].W = (paran*distPlot[i][k].W) + sum;
+          if(result[i][k].W == 1){
+            result[i][k].H = 0;
+            result[i][k].M = 0;
+            continue;
+          }
         }
         //Hero
         if(distPlot[i][k].M != 1.0 && distPlot[i][k].W != 1.0){
@@ -65,6 +70,11 @@ public class FOW{
             }
           }
           result[i][k].H = (paran*distPlot[i][k].H) + sum;
+          if(result[i][k].H == 1){
+            result[i][k].W = 0;
+            result[i][k].M = 0;
+            continue;
+          }
           //System.out.println("" + paran + ", " + sum + ", " + totalMoves(i,k));
         }
 
@@ -86,6 +96,11 @@ public class FOW{
             }
           }
           result[i][k].M = ((double)paran*distPlot[i][k].M) + (double)sum;
+          if(result[i][k].M == 1){
+            result[i][k].W = 0;
+            result[i][k].H = 0;
+            continue;
+          }
         }
         // Next steps
       }
@@ -601,8 +616,8 @@ public class FOW{
           double summer = 0;
           for(int tempx=-1; tempx<=1; tempx++){
             for(int tempy=-1; tempy<=1; tempy++){
-              int i = x + tempx;
-              int k = y + tempy;
+              int i = y + tempx;
+              int k = x + tempy;
               if(i <0 || k<0 || i>=grid.length || k>=grid.length || (tempx==0 && tempy==0) ){
                 continue;
               }
@@ -613,6 +628,7 @@ public class FOW{
               }
             }
           }
+          //System.out.println(summer);
           if(sensed==0){
             continue;
           }
@@ -647,8 +663,8 @@ public class FOW{
               if(parts[1+tempx] == 0){
                 continue;
               }
-              int i = x + tempx;
-              int k = y + tempy;
+              int i = y + tempx;
+              int k = x + tempy;
               if(i <0 || k<0 || i>=grid.length || k>=grid.length || (tempx==0 && tempy==0) ){
                 continue;
               }
@@ -681,6 +697,7 @@ public class FOW{
           }
         }
         else {
+
           for (int i = -1; i <= 1 ; i++) {
             for (int k = -1; k <= 1 ; k++) {
               int x1 = i +x;
@@ -892,7 +909,7 @@ public class FOW{
     }
   }
   // Checks for winner
-  public static void game(Node[][] grid){
+  public static boolean game(Node[][] grid){
     int home = 0;
     int away = 0;
     for(int i = 0; i<grid.length; i++){
@@ -906,16 +923,17 @@ public class FOW{
     }
     if(home == 0 && away == 0){
       System.out.println("DRAW!!");
-      System.exit(0);
+      return true;
     }
     if(home != 0 && away == 0){
       System.out.println("Home Wins!!");
-      System.exit(0);
+      return true;
     }
     if(home == 0 && away != 0){
       System.out.println("Away Wins!!");
-      System.exit(0);
+      return true;
     }
+    return false;
 
   }
 }
