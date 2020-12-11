@@ -310,6 +310,65 @@ public class FOW{
         }
       }
     }
+
+    for(int i = 0; i<distPlot.length; i++){
+      for(int k = 0; k<distPlot.length; k++){
+        if(distPlot[k][i].W == 1){
+          distPlot[k][i].M = 0;
+          distPlot[k][i].H = 0;
+
+        } else if(distPlot[k][i].H == 1){
+          distPlot[k][i].W = 0;
+          distPlot[k][i].M = 0;
+        } else if(distPlot[k][i].M == 1){
+          distPlot[k][i].W = 0;
+          distPlot[k][i].H = 0;
+        }
+      }
+    }
+
+    sum =0;
+    for(int i = 0; i<distPlot.length; i++){
+      for(int k = 0; k<distPlot.length; k++){
+        sum+= distPlot[k][i].M;
+      }
+    }
+    if(sum!=0){
+      for(int i = 0; i<distPlot.length; i++){
+        for(int k = 0; k<distPlot.length; k++){
+          distPlot[k][i].M = distPlot[k][i].M/sum;
+        }
+      }
+    }
+
+
+    sum =0;
+    for(int i = 0; i<distPlot.length; i++){
+      for(int k = 0; k<distPlot.length; k++){
+        sum+= distPlot[k][i].W;
+      }
+    }
+    if(sum!=0){
+      for(int i = 0; i<distPlot.length; i++){
+        for(int k = 0; k<distPlot.length; k++){
+          distPlot[k][i].W = distPlot[k][i].W/sum;
+        }
+      }
+    }
+
+    sum =0;
+    for(int i = 0; i<distPlot.length; i++){
+      for(int k = 0; k<distPlot.length; k++){
+        sum+= distPlot[k][i].H;
+      }
+    }
+    if(sum!=0){
+      for(int i = 0; i<distPlot.length; i++){
+        for(int k = 0; k<distPlot.length; k++){
+          distPlot[k][i].H = distPlot[k][i].H/sum;
+        }
+      }
+    }
     return distPlot;
   }
   //Updates the probability distribution based on the movement of our agent;
@@ -727,7 +786,7 @@ public class FOW{
         }
       }
     }
-    return distPlot;
+    return balance(distPlot);
   }
   //Returns an array with the number of each piece;[mage,wumpus,hero]
   public static double[] typeCount(Node[][] grid){

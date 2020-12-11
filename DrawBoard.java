@@ -205,11 +205,13 @@ public class DrawBoard {
 					g.drawRect(x*CSIZE,k*CSIZE,CSIZE,CSIZE);
 
 					if(board.Board[x][k].isPit == true) {
-						g.setColor(new Color(75,75,75)); //Dark Grey
-						g.fillOval(x*CSIZE,k*CSIZE,CSIZE,CSIZE);
+						if(first == 153){
+							g.setColor(new Color(75,75,75)); //Dark Grey
+							g.fillOval(x*CSIZE,k*CSIZE,CSIZE,CSIZE);
+						}
 					}
 
-					//For Peices to be Drawn
+					//For Pieces to be Drawn
 					if(board.Board[x][k].side == 0) {
 						//Cream
 						g.setColor(new Color(255,255,200));
@@ -222,7 +224,7 @@ public class DrawBoard {
 
 
 
-					if(distPlot == null || distPlot[x][k].isOurs){
+					if(distPlot == null || distPlot[x][k].isOurs || board.Board[x][k].side == 0){
 						if (board.Board[x][k].type == 'm') {
 
 							g.setFont(new Font("Arial",Font.BOLD,CSIZE/4));

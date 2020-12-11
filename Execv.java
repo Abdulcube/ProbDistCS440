@@ -56,37 +56,43 @@ public class Execv {
 
 					//AI Turn table assuming switch is random
 					//4
+					traverse(d.distPlot);
+
 					obs = FOW.obsCheck(b.Board);
-					d.obs = obs;
 					//Display the observation Matrix
 					FOW.obsTraverse(obs);
+					d.obs = obs;
 					d.distPlot = FOW.obsUpdate(d.distPlot, b.Board, obs);
 					//Display probability distribution
+					traverse(d.distPlot);
 					d.updateBoard();
-
 					//1
 					System.out.print("Press Enter when ready for opponent Movement: ");
 					k = IO.readString();
+					//if(k.equals("Fares")){d.toggle(true);} else {d.toggle(false);}
 					b.Board = FOW.movement(b.Board, d.distPlot,1);
 					if(b.Board == null){System.exit(0);}
-					d.updateBoard();
-					FOW.game(b.Board);
+					if(FOW.game(b.Board)){d.updateBoard();return;}
 					d.distPlot = FOW.PlayerMovement(b.Board, d.distPlot);
+					traverse(d.distPlot);
+
+					d.distPlot = (new FOW(d.distPlot, b.Board, obs, 0)).distPlot;
+
 					obs = FOW.obsCheck(b.Board);
 					d.obs = obs;
-					d.distPlot = (new FOW(d.distPlot, b.Board, obs, 0)).distPlot;
+					traverse(d.distPlot);
 					d.distPlot = FOW.obsUpdate(d.distPlot, b.Board, obs);
 					//2
 					//Display probability distribution
-					d.updateBoard();
 					traverse(d.distPlot);
+					d.updateBoard();
 					//3
 					System.out.print("Press Enter when Player turn ends: ");
 					k = IO.readString();
 					b.Board = FOW.movement(b.Board, d.distPlot,0);
 					if(b.Board == null){System.exit(0);}
 					d.updateBoard();
-					FOW.game(b.Board);
+					if(FOW.game(b.Board)){return;}
 					d.distPlot = FOW.PlayerMovement(b.Board, d.distPlot);
 
 
@@ -115,7 +121,7 @@ public class Execv {
 				//if(k.equals("Fares")){d.toggle(true);} else {d.toggle(false);}
 				b.Board = FOW.movement(b.Board, d.distPlot,1);
 				if(b.Board == null){System.exit(0);}
-				if(FOW.game(b.Board)){return;}
+				if(FOW.game(b.Board)){d.updateBoard();return;}
 				d.distPlot = FOW.PlayerMovement(b.Board, d.distPlot);
 				d.distPlot = (new FOW(d.distPlot, b.Board, obs)).distPlot;
 
@@ -135,6 +141,8 @@ public class Execv {
 				d.updateBoard();
 				if(FOW.game(b.Board)){return;}
 				d.distPlot = FOW.PlayerMovement(b.Board, d.distPlot);
+
+
 
 			}
 			System.out.println("Ended!");
@@ -189,7 +197,9 @@ public class Execv {
 	}
 
 	public static void traverse(PNode[][] distPlot){
-		System.out.println("< Pits");
+		System.out.println("New Traverse");
+		System.out.println();
+		System.out.println("< Hero");
 		for(int j =0; j<distPlot.length; j++){
 			for(int i =0; i<distPlot.length; i++){
 			//	System.out.println("" + i + j);
@@ -197,7 +207,7 @@ public class Execv {
 					System.out.print("Age : ");
 				} else {
 					//+ ", " + Execv.round(distPlot[i][j].P,3)
-					System.out.print(""+Execv.round(distPlot[i][j].P,5)+ " : ");
+					System.out.print(""+Execv.round(distPlot[i][j].H,5)+ " : ");
 					//System.out.print(""+distPlot[i][j].W+", "+distPlot[i][j].H + ", " + distPlot[i][j].M+", "+ distPlot[i][j].P +" :: " );
 				}
 			}
@@ -205,7 +215,7 @@ public class Execv {
 		}
 		System.out.println(">");
 
-		/*System.out.println("< Mage");
+		System.out.println("< Mage");
 		for(int j =0; j<distPlot.length; j++){
 			for(int i =0; i<distPlot.length; i++){
 			//	System.out.println("" + i + j);
@@ -235,7 +245,7 @@ public class Execv {
 			}
 			System.out.println();
 		}
-		System.out.println(">");*/
+		System.out.println(">");
 	}
 
 	public static double round(double value, int places) {
