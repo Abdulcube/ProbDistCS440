@@ -296,7 +296,7 @@ public class FOW{
     return moves;
   }
   // Makes all the sum values out of one
-  public static PNode[][] balance(PNode[][] distPlot){
+  public static PNode[][] balance(PNode[][] distPlot, Node[][] grid){
     double sum =0;
     for(int i = 0; i<distPlot.length; i++){
       sum =0;
@@ -326,13 +326,16 @@ public class FOW{
         }
       }
     }
-
+    /*
+    double[] arr =typeCount(grid);
     sum =0;
     for(int i = 0; i<distPlot.length; i++){
       for(int k = 0; k<distPlot.length; k++){
         sum+= distPlot[k][i].M;
       }
     }
+    sum = sum/arr[0];
+    System.out.println();
     if(sum!=0){
       for(int i = 0; i<distPlot.length; i++){
         for(int k = 0; k<distPlot.length; k++){
@@ -348,6 +351,8 @@ public class FOW{
         sum+= distPlot[k][i].W;
       }
     }
+    sum = sum/arr[1];
+
     if(sum!=0){
       for(int i = 0; i<distPlot.length; i++){
         for(int k = 0; k<distPlot.length; k++){
@@ -362,13 +367,15 @@ public class FOW{
         sum+= distPlot[k][i].H;
       }
     }
+    sum = sum/arr[2];
+
     if(sum!=0){
       for(int i = 0; i<distPlot.length; i++){
         for(int k = 0; k<distPlot.length; k++){
           distPlot[k][i].H = distPlot[k][i].H/sum;
         }
       }
-    }
+    }*/
     return distPlot;
   }
   //Updates the probability distribution based on the movement of our agent;
@@ -384,7 +391,7 @@ public class FOW{
               if(distPlot[x][y].isOurs && grid[x][y].side != 0){
                 distPlot[i][k] = distPlot[x][y];
                 distPlot[x][y] = new PNode(0,0,0,0);
-                return balance(distPlot);
+                return balance(distPlot , grid);
               }
             }
           }
@@ -397,7 +404,7 @@ public class FOW{
                 distPlot[x][y] = distPlot[i][k];
                 //System.out.println("Inner");
                 distPlot[i][k] = new PNode(0,0,0,0);
-                return balance(distPlot);
+                return balance(distPlot , grid);
               }
             }
           }
@@ -408,7 +415,7 @@ public class FOW{
         //
       }
     }
-    return balance(distPlot);
+    return balance(distPlot , grid);
   }
   //Updates the probability distribution based on the agents observations;
   public static PNode[][] obsUpdate(PNode[][] distPlot, Node[][] grid, String[][] observations){
@@ -786,7 +793,7 @@ public class FOW{
         }
       }
     }
-    return balance(distPlot);
+    return balance(distPlot , grid);
   }
   //Returns an array with the number of each piece;[mage,wumpus,hero]
   public static double[] typeCount(Node[][] grid){
