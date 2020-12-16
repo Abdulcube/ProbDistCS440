@@ -442,6 +442,33 @@ public class FOW{
           //  System.out.println("Sum: "+sum);
           if(sum == 0){
             System.out.println("ERROR: Opponent's Wumpus if off the grid.");
+            int produce = 0;
+            for (int i = -1; i <= 1 ; i++) {
+              for (int k = -1; k <= 1 ; k++) {
+                int x1 = i +x;
+                int y1 = k +y;
+                if((i == 0 && k == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                  continue;
+                }
+                //  System.out.println("distPlot.W: "+distPlot[x1][y1].W);
+                if(distPlot[x1][y1].P!= 1.0 && distPlot[x1][y1].H != 1 && distPlot[x1][y1].M != 1 || !distPlot[x1][y1].isOurs){
+                  produce++;
+                }
+              }
+            }
+
+            for (int i = -1; i <= 1 ; i++) {
+              for (int k = -1; k <= 1 ; k++) {
+                int x1 = i +x;
+                int y1 = k +y;
+                if((i == 0 && k == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                  continue;
+                }
+                if(distPlot[x1][y1].P!= 1.0 && distPlot[x1][y1].H != 1 && distPlot[x1][y1].M != 1 || !distPlot[x1][y1].isOurs){
+                  distPlot[x1][y1].W = 1/(double)produce;
+                }
+              }
+            }
             return distPlot;
           }
           HashMap<Integer, Integer> proximity = new HashMap<Integer, Integer>();
@@ -524,6 +551,33 @@ public class FOW{
           //  System.out.println("Sum: "+sum);
           if(sum == 0){
             System.out.println("ERROR: Opponent's Mage if off the grid.");
+            int produce = 0;
+            for (int i = -1; i <= 1 ; i++) {
+              for (int k = -1; k <= 1 ; k++) {
+                int x1 = i +x;
+                int y1 = k +y;
+                if((i == 0 && k == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                  continue;
+                }
+                //  System.out.println("distPlot.W: "+distPlot[x1][y1].W);
+                if(distPlot[x1][y1].P!= 1 && distPlot[x1][y1].H != 1 && distPlot[x1][y1].W != 1 || !distPlot[x1][y1].isOurs){
+                  produce++;
+                }
+              }
+            }
+
+            for (int i = -1; i <= 1 ; i++) {
+              for (int k = -1; k <= 1 ; k++) {
+                int x1 = i +x;
+                int y1 = k +y;
+                if((i == 0 && k == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                  continue;
+                }
+                if(distPlot[x1][y1].P!= 1 && distPlot[x1][y1].H != 1 && distPlot[x1][y1].W != 1 || !distPlot[x1][y1].isOurs){
+                  distPlot[x1][y1].M = 1/(double)produce;
+                }
+              }
+            }
             return distPlot;
           }
           HashMap<Integer, Integer> proximity = new HashMap<Integer, Integer>();
@@ -606,6 +660,33 @@ public class FOW{
           //  System.out.println("Sum: "+sum);
           if(sum == 0){
             System.out.println("ERROR: Opponent's Hero if off the grid.");
+            int produce = 0;
+            for (int i = -1; i <= 1 ; i++) {
+              for (int k = -1; k <= 1 ; k++) {
+                int x1 = i +x;
+                int y1 = k +y;
+                if((i == 0 && k == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                  continue;
+                }
+                //  System.out.println("distPlot.W: "+distPlot[x1][y1].W);
+                if(distPlot[x1][y1].P!= 1 && distPlot[x1][y1].W != 1 && distPlot[x1][y1].M != 1 || !distPlot[x1][y1].isOurs){
+                  produce++;
+                }
+              }
+            }
+
+            for (int i = -1; i <= 1 ; i++) {
+              for (int k = -1; k <= 1 ; k++) {
+                int x1 = i +x;
+                int y1 = k +y;
+                if((i == 0 && k == 0) || x1<0  || y1<0 || x1>=distPlot.length  || y1>=distPlot.length){
+                  continue;
+                }
+                if(distPlot[x1][y1].P!= 1 && distPlot[x1][y1].W != 1 && distPlot[x1][y1].M != 1 || !distPlot[x1][y1].isOurs){
+                  distPlot[x1][y1].H = 1/(double)produce;
+                }
+              }
+            }
             return distPlot;
           }
           HashMap<Integer, Integer> proximity = new HashMap<Integer, Integer>();
@@ -813,6 +894,7 @@ public class FOW{
   //Makes our agent move: Problem number 4
   public static Node[][] movement(Node[][] grid, PNode[][] distPlot, int turn){
     if(turn == 0){
+
       boolean flag = true;
       int[] move = new int[4];
       double max = -100;
@@ -908,7 +990,14 @@ public class FOW{
           }
         }
       }
-
+      /*try
+      {
+        Thread.sleep(1000);
+      }
+      catch(InterruptedException ex)
+      {
+        Thread.currentThread().interrupt();
+      }*/
       if(flag){return null;}
       Node winner = grid[move[2]][move[3]].resolve(grid[move[0]][move[1]]);
       grid[move[2]][move[3]] = new Node(winner);
